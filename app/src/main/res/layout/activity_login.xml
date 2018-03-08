@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="invisible"
+                android:visibility="visible"
                 tools:context="com.example.android.anonymoustwitter.LoginActivity">
 
                 <ImageView
@@ -169,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="invisible">
 
                 <ImageView
                     android:id="@+id/dpButton"
@@ -263,7 +263,7 @@
 
 
                     <Button
-                        android:id="@+id/cancel"
+                        android:id="@+id/cancelRegistration"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -271,7 +271,7 @@
                         android:textColor="@color/colorPrimaryDark" />
 
                     <Button
-                        android:id="@+id/RegisterMe"
+                        android:id="@+id/submitRegistration"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
