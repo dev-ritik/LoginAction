@@ -101,15 +101,7 @@
                     android:layout_margin="5dp"
                     android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/email_sign_in_button"
-                        style="?android:textAppearanceSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/action_sign_in"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textStyle="bold" />
+
 
                     <Button
                         android:id="@+id/registerButton"
@@ -118,6 +110,16 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="SignUp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/email_sign_in_button"
+                        style="?android:textAppearanceSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/action_sign_in"
                         android:textColor="@color/colorPrimaryDark"
                         android:textStyle="bold" />
                 </LinearLayout>
