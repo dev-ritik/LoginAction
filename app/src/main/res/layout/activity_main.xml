@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/main_content"
+    android:padding="5dp"
+    tools:context="com.example.android.loginaction.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="12dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/icon_profile_empty"
+            />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/com_facebook_button_background_color_focused"
+            android:layout_below="@+id/profile_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:padding="5dp"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            tools:text="jjjjjjjj" />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userName"
+            android:textAlignment="center"
+            android:textColor="@color/com_facebook_button_background_color_focused"
+            android:padding="3dp"
+            android:layout_centerHorizontal="true"
+            android:textSize="20dp"
+            android:textStyle="italic"
+            tools:text="nij" />
+
+    </RelativeLayout>
+</LinearLayout>
