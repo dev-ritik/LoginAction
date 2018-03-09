@@ -79,14 +79,14 @@ public class LoginActivity extends AppCompatActivity {
     LinearLayout registerScreen;
     private FirebaseUser user;
     private ImageView dpChangeButton;
-    private Uri selectedImageUri=null, downloadUrl=null;
+    private Uri selectedImageUri = null, downloadUrl = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (EditText) findViewById(R.id.email);
+        mEmailView = (EditText) findViewById(R.id.emailInput);
 //        populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptRegistration();
                     return true;
                 }
                 return false;
@@ -179,6 +179,8 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Log.i("auth state null", "point 173");
+                    Toast.makeText(LoginActivity.this, "some error occured", Toast.LENGTH_SHORT).show();
+
                 }
             }
         };
@@ -233,59 +235,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-//    private void populateAutoComplete() {
-//        if (!mayRequestContacts()) {
-//            return;
-//        }
-//
-//    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        if (requestCode == REQUEST_READ_CONTACTS) {
-//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                populateAutoComplete();
-//            }
-//        }
-//    }
-
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -294,43 +244,15 @@ public class LoginActivity extends AppCompatActivity {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
         // Check for a valid password, if the user entered one.
 
         passwordCheck(mPasswordView);
-//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-//            mPasswordView.setError(getString(R.string.error_invalid_password));
-//            focusView = mPasswordView;
-//            cancel = true;
-//        }
-
-        // Check for a valid email address.
-//        if (TextUtils.isEmpty(email)) {
-//            mEmailView.setError(getString(R.string.error_field_required));
-//            focusView = mEmailView;
-//            cancel = true;
-//        } else if (!isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            focusView = mEmailView;
-//            cancel = true;
-//        }
-
         emailCheck(mEmailView);
-
-//        if (cancel) {
-//            // There was an error; don't attempt login and focus the first
-//            // form field with an error.
-//            focusView.requestFocus();
-//        } else {
-        // Show a progress spinner, and kick off a background task to
-        // perform the user login attempt.
 
         if (passwordCheck(mPasswordView) && (emailCheck(mEmailView))) {
 
             Log.i("login attempted", "point 171");
-            showProgress(true);
+//            showProgress(true);
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -348,6 +270,9 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.i("point 236", task.getException().toString());
+
+                                mProgressView.setVisibility(View.INVISIBLE);
+                                mLoginFormView.setVisibility(View.VISIBLE);
                                 Toast.makeText(LoginActivity.this, "Login Id or Password is incorrect",
                                         Toast.LENGTH_SHORT).show();
                             }
@@ -365,10 +290,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptRegistration() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-
         // Reset errors.
         emailRegister.setError(null);
         userName.setError(null);
@@ -396,12 +317,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-//            if (passwordCheck(password1) && (emailCheck(emailRegister))) {
-
         Log.i("registration attempted", "point 298");
-        showProgress(true);
-
 //        mProgressBar.setVisibility(View.VISIBLE);
+
         mAuth.createUserWithEmailAndPassword(email, password1String)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -500,13 +418,14 @@ public class LoginActivity extends AppCompatActivity {
     private boolean emailCheck(EditText email) {
         String emailString = email.getText().toString();
         View focusView;
-        if (!TextUtils.isEmpty(emailString)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
+        if (TextUtils.isEmpty(emailString)) {
+            Log.i("point 506", "email null");
+            email.setError(getString(R.string.error_field_required));
             focusView = email;
             focusView.requestFocus();
             return false;
         } else if (!emailString.contains("@")) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+            email.setError(getString(R.string.error_invalid_email));
             focusView = email;
             focusView.requestFocus();
             return false;
@@ -586,42 +505,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
     @Override

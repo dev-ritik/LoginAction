@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                         .transform(transformation)
                         .into(profilePic);
             } else {
-                Log.i("profile pic=null", "standpoint pr75");
+                Log.i("profile pic=null", "point 83");
 
                 profilePic.setImageResource(R.drawable.icon_profile_empty);
             }
