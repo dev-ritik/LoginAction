@@ -1,17 +1,12 @@
 package com.example.android.loginaction;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
+
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,6 +36,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -49,8 +45,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -60,7 +57,6 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Id to identity READ_CONTACTS permission request.
      */
-    private static final int REQUEST_READ_CONTACTS = 0;
     private final static int RC_SIGN_IN = 1;
     private static final int RC_PHOTO_PICKER = 2;
 
@@ -114,7 +110,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Log.i("login started", "point 69");
-//                    attemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
                 attemptLogin();
             }
         });
@@ -170,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
                     //pass intent ....
-                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
 
                     intent.putExtra("result", 1);
                     setResult(Activity.RESULT_OK, intent);
@@ -179,7 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Log.i("auth state null", "point 173");
-                    Toast.makeText(LoginActivity.this, "some error occured", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "unregistered yet", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -325,7 +320,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-//                            FirebaseUser user = MainActivity.firebaseAuth.getCurrentUser();
                             loginScreen.setVisibility(View.VISIBLE);
                             registerScreen.setVisibility(View.INVISIBLE);
                             // Sign in success, update UI with the signed-in user's information
@@ -344,7 +338,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Log.d("point 325", "User profile successfully updated.");
+                                                        Log.i("point 325", "User profile successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
                                                     }
@@ -352,16 +346,18 @@ public class LoginActivity extends AppCompatActivity {
                                             });
                                 } else {
                                     Log.i("to signup", "point 332");
+                                    Log.i("point 349", "User profile pic upload failed.");
+
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(userNameString)
                                             .build();
-                                    Log.i(selectedImageUri.toString(), "standpoint L246");
+                                    Log.i(selectedImageUri.toString(), "point 354");
                                     user.updateProfile(profileUpdates)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Log.d("point 342", "User profile successfully updated.");
+                                                        Log.i("point 342", "User name successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
                                                     }
@@ -377,7 +373,7 @@ public class LoginActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Log.d("point 358", "User profile successfully updated.");
+                                                    Log.i("point 358", "User profile successfully updated.");
                                                     selectedImageUri = null;
                                                     downloadUrl = null;
                                                 }
@@ -463,23 +459,25 @@ public class LoginActivity extends AppCompatActivity {
             }
         } else if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             selectedImageUri = data.getData();
-            Log.i(selectedImageUri.toString(), "standpoint m302");
+            Log.i(selectedImageUri.toString(), "point 462");
             dpChangeButton.setImageURI(selectedImageUri);
-//            if (selectedImageUri != null) {
-//                signUpButton.setActivated(false);
-//                StorageReference photoREf = MainActivity.mChatPhotosStorageReference.child(selectedImageUri.getLastPathSegment());
-////                              take last part of uri location link and make child of mChatPhotosStorageReference
-//                photoREf.putFile(selectedImageUri).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    //                    upload file to firebase onsucess of upload
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
-//                        Log.i("success at profile up", "standpoint L255");
-//
-//                        submitRegistration.setActivated(true);
-//                    }
-//                });
-//            }
+            if (selectedImageUri != null) {
+                submitRegistration.setActivated(false);
+                StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
+//                              take last part of uri location link and make child of mChatPhotosStorageReference
+                photoREf.putFile(selectedImageUri).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    //                    upload file to firebase onsucess of upload
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
+                        Log.i("success at profile up", "point 473");
+
+                        submitRegistration.setActivated(true);
+                    }
+
+                });
+
+            }
         }
     }
 
@@ -549,6 +547,19 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        Log.i("point 562","back pressed");
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(startMain);
+        return;
+
     }
 }
 
