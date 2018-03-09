@@ -55,7 +55,7 @@
                     android:textColorHint="@color/black">
 
                     <EditText
-                        android:id="@+id/email"
+                        android:id="@+id/emailInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_email"
