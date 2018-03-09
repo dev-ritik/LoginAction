@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 
@@ -25,32 +27,49 @@ public class MainActivity extends AppCompatActivity {
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
 
-    private static String mUserId;
     private static String mUser;
     private static Uri mUserProfile;
     private String mEmailId;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseStorage mFirebaseStorage;
+    public static StorageReference mProfilePicStorageReference;
 
     private LinearLayout mainLayout;
-    private LoginActivity gg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        mProfilePicStorageReference = mFirebaseStorage.getReference("profile_pic");
 
-        Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                //to find if user is signed or not
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    //user is signed
+//                    Toast.makeText(MainActivity.this, "Welcome to FriendlyChat!", Toast.LENGTH_SHORT).show();
+                    onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
+                } else {
+                    //user signed out
+                    onSignOutCleaner();
+                    startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
+                            RC_SIGN_IN);
+                    Snackbar snackbar = Snackbar.make(mainLayout, "Logged out successfully", Snackbar.LENGTH_SHORT);
+                    View sbView = snackbar.getView();
+                    TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.GREEN);
+                    snackbar.show();
+                }
+            }
+        };
         getSupportActionBar().setTitle("Profile");
 
-        mUserId = ANONYMOUS;
-        mUserProfile = null;
-        mEmailId = "";
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         TextView userName = findViewById(R.id.userName);
@@ -89,45 +108,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView emailId = findViewById(R.id.email);
-        emailId.setText(email);
+        emailId.setText(mEmailId);
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                //to find if user is signed or not
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    //user is signed
-//                    Toast.makeText(MainActivity.this, "Welcome to FriendlyChat!", Toast.LENGTH_SHORT).show();
-                    onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl());
-                    mUser = user.getDisplayName();//send name and operate with db
-                    Log.i(mUser, "point M99");
 
-                } else {
-                    //user signed out
-                    onSignOutCleaner();
-                    startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
-                            RC_SIGN_IN);
-                    Snackbar snackbar = Snackbar.make(mainLayout, "Logged out successfully", Snackbar.LENGTH_SHORT);
-                    View sbView = snackbar.getView();
-                    TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-                    textView.setTextColor(Color.GREEN);
-                    snackbar.show();
-                }
-            }
-        };
     }
 
-    private void onSignInitilize(String userid, String email, Uri profilePic) {
-        mUserId = userid;
+    private void onSignInitilize(String userid, String email, Uri profilePic, String userName) {
         mEmailId = email;
         mUserProfile = profilePic;
+        mUser = userName;
 
     }
 
     private void onSignOutCleaner() {
-        mUserId = ANONYMOUS;
         mEmailId = "";
+        mUser=ANONYMOUS;
+        mUserProfile = null;
 
     }
 
@@ -154,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logout(View v) {
-        mUserId = ANONYMOUS;
         mUserProfile = null;
         mEmailId = "";
         AuthUI.getInstance().signOut(this);//from login providers and smart lock//redirects to onpause and on resume
@@ -173,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("resume", "point m144");
-
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
 
     }
