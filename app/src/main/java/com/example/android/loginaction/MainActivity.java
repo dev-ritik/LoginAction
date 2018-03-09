@@ -125,9 +125,6 @@ public class MainActivity extends AppCompatActivity {
             profilePic.setImageResource(R.drawable.icon_profile_empty);
         }
 
-
-
-
     }
 
     private void onSignInitilize(String userid, String email, Uri profilePic, String userName) {
