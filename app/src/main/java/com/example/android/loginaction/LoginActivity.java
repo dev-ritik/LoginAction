@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private SignInButton signInGoogleButton;
     private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    //    private FirebaseAuth.AuthStateListener mAuthListener;
     RelativeLayout loginScreen;
     LinearLayout registerScreen;
     private FirebaseUser user;
@@ -83,7 +83,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.emailInput);
-//        populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -160,25 +159,25 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null) {
-                    //pass intent ....
-                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-
-                    intent.putExtra("result", 1);
-                    setResult(Activity.RESULT_OK, intent);
-//                   startActivity(intent);
-                    Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Log.i("auth state null", "point 173");
-                    Toast.makeText(LoginActivity.this, "unregistered yet", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        };
+//        mAuthListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                if (firebaseAuth.getCurrentUser() != null) {
+//                    //pass intent ....
+//                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+//
+//                    intent.putExtra("result", 1);
+//                    setResult(Activity.RESULT_OK, intent);
+////                   startActivity(intent);
+//                    Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
+//                    finish();
+//                } else {
+//                    Log.i("auth state null", "point 173");
+//                    Toast.makeText(LoginActivity.this, "unregistered yet", Toast.LENGTH_SHORT).show();
+//
+//                }
+//            }
+//        };
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
 
@@ -257,18 +256,24 @@ public class LoginActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.i("signInWithEmail:success", "point 187");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                try {
-                                    Log.i(user.getDisplayName(), "point 189");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+//
+                                intent.putExtra("result", 1);
+                                setResult(Activity.RESULT_OK, intent);
+                                startActivity(intent);
+                                Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
+                                finish();//                                try {
+//                                    Log.i(user.getDisplayName(), "point 189");
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.i("point 236", task.getException().toString());
 
                                 mProgressView.setVisibility(View.INVISIBLE);
                                 mLoginFormView.setVisibility(View.VISIBLE);
-                                Toast.makeText(LoginActivity.this, "Login Id or Password is incorrect",
+                                Toast.makeText(LoginActivity.this, "Login Id or Password is incorr  ect",
                                         Toast.LENGTH_SHORT).show();
                             }
 
@@ -341,6 +346,13 @@ public class LoginActivity extends AppCompatActivity {
                                                         Log.i("point 325", "User profile successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
+                                                        Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+//
+                                                        intent.putExtra("result", 1);
+                                                        setResult(Activity.RESULT_OK, intent);
+                                                        startActivity(intent);
+                                                        Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
+                                                        finish();
                                                     }
                                                 }
                                             });
@@ -360,6 +372,13 @@ public class LoginActivity extends AppCompatActivity {
                                                         Log.i("point 342", "User name successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
+                                                        Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+//
+                                                        intent.putExtra("result", 1);
+                                                        setResult(Activity.RESULT_OK, intent);
+                                                        startActivity(intent);
+                                                        Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
+                                                        finish();
                                                     }
                                                 }
                                             });
@@ -376,6 +395,13 @@ public class LoginActivity extends AppCompatActivity {
                                                     Log.i("point 358", "User profile successfully updated.");
                                                     selectedImageUri = null;
                                                     downloadUrl = null;
+                                                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+//
+                                                    intent.putExtra("result", 1);
+                                                    setResult(Activity.RESULT_OK, intent);
+                                                    startActivity(intent);
+                                                    Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
+                                                    finish();
                                                 }
                                             }
                                         });
@@ -493,6 +519,13 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.i("signInWithCrential:suce", "point 575");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+//
+                            intent.putExtra("result", 1);
+                            setResult(Activity.RESULT_OK, intent);
+                            startActivity(intent);
+                            Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
+                            finish();
 //                            mProgressBar.setVisibility(View.INVISIBLE);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -508,14 +541,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+//        mAuth.addAuthStateListener(mAuthListener);
         // Check if user is signed in (non-null) and update UI accordingly.
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mAuth.addAuthStateListener(mAuthListener);
+//        mAuth.addAuthStateListener(mAuthListener);
     }
 
 
@@ -553,7 +586,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        Log.i("point 562","back pressed");
+        Log.i("point 562", "back pressed");
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
