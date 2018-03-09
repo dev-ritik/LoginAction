@@ -2,6 +2,7 @@ package com.example.android.loginaction;
 
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -81,7 +82,19 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
+
+        findViewById(R.id.github).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
+//                search.putExtra(SearchManager.QUERY, https://github.com/ritik1991998/LoginAction);
+//                startActivity(search);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://github.com/ritik1991998/LoginAction"));
+                startActivity(i);
+            }
+        });
+
         mEmailView = (EditText) findViewById(R.id.emailInput);
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -187,16 +200,20 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i("got that", "facebook:onSuccess:" + loginResult);
+                mProgressView.setVisibility(View.VISIBLE);
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
             }
 
             @Override
             public void onCancel() {
+                mProgressView.setVisibility(View.INVISIBLE);
                 Log.d("cancelled!!", "facebook:onCancel");
             }
 
             @Override
             public void onError(FacebookException error) {
+                mProgressView.setVisibility(View.INVISIBLE);
                 Log.i("error!!", "facebook:onError", error);
             }
         });
@@ -205,6 +222,7 @@ public class LoginActivity extends AppCompatActivity {
         signInGoogleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mProgressView.setVisibility(View.VISIBLE);
                 signIn();
             }
         });
@@ -231,6 +249,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void attemptLogin() {
         // Reset errors.
+        mProgressView.setVisibility(View.VISIBLE);
+
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
@@ -255,6 +275,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.i("signInWithEmail:success", "point 187");
+                                mProgressView.setVisibility(View.INVISIBLE);
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
 //
@@ -273,13 +294,14 @@ public class LoginActivity extends AppCompatActivity {
 
                                 mProgressView.setVisibility(View.INVISIBLE);
                                 mLoginFormView.setVisibility(View.VISIBLE);
-                                Toast.makeText(LoginActivity.this, "Login Id or Password is incorr  ect",
+                                Toast.makeText(LoginActivity.this, "Login Id or Password is incorrect",
                                         Toast.LENGTH_SHORT).show();
                             }
 
                         }
                     });
         } else {
+            mProgressView.setVisibility(View.INVISIBLE);
             Toast.makeText(LoginActivity.this, "Try again", Toast.LENGTH_SHORT).show();
         }
     }
@@ -291,6 +313,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void attemptRegistration() {
         // Reset errors.
+        mProgressView.setVisibility(View.VISIBLE);
         emailRegister.setError(null);
         userName.setError(null);
         password1.setError(null);
@@ -302,11 +325,18 @@ public class LoginActivity extends AppCompatActivity {
         String password1String = password1.getText().toString();
         String password2String = password2.getText().toString();
 
+        if (!emailCheck(emailRegister)) {
+            mProgressView.setVisibility(View.INVISIBLE);
+            return;
+        }
+
         View focusView;
         if (!passwordCheck(password1)) {
+            mProgressView.setVisibility(View.INVISIBLE);
             return;
         }
         if (!passwordCheck(password2)) {
+            mProgressView.setVisibility(View.INVISIBLE);
             return;
         }
 
@@ -314,6 +344,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Passwords doesn't match", Toast.LENGTH_SHORT).show();
             focusView = password1;
             focusView.requestFocus();
+            mProgressView.setVisibility(View.INVISIBLE);
             return;
         }
 
@@ -346,8 +377,9 @@ public class LoginActivity extends AppCompatActivity {
                                                         Log.i("point 325", "User profile successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
+                                                        mProgressView.setVisibility(View.INVISIBLE);
+
                                                         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//
                                                         intent.putExtra("result", 1);
                                                         setResult(Activity.RESULT_OK, intent);
                                                         startActivity(intent);
@@ -372,8 +404,9 @@ public class LoginActivity extends AppCompatActivity {
                                                         Log.i("point 342", "User name successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
+                                                        mProgressView.setVisibility(View.INVISIBLE);
+
                                                         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//
                                                         intent.putExtra("result", 1);
                                                         setResult(Activity.RESULT_OK, intent);
                                                         startActivity(intent);
@@ -395,8 +428,9 @@ public class LoginActivity extends AppCompatActivity {
                                                     Log.i("point 358", "User profile successfully updated.");
                                                     selectedImageUri = null;
                                                     downloadUrl = null;
+                                                    mProgressView.setVisibility(View.INVISIBLE);
+
                                                     Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//
                                                     intent.putExtra("result", 1);
                                                     setResult(Activity.RESULT_OK, intent);
                                                     startActivity(intent);
@@ -407,7 +441,7 @@ public class LoginActivity extends AppCompatActivity {
                                         });
                             }
                             Log.i(user.getDisplayName(), "point 365");
-//                            mProgressBar.setVisibility(View.INVISIBLE);
+//                            mProgressView.setVisibility(View.INVISIBLE);
                         } else {
                             registerScreen.setVisibility(View.VISIBLE);
                             loginScreen.setVisibility(View.INVISIBLE);
@@ -415,7 +449,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("crteUserWithEmail:fail", "point 371");
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-//                            mProgressBar.setVisibility(View.INVISIBLE);
+                            mProgressView.setVisibility(View.INVISIBLE);
                         }
 
                     }
@@ -428,7 +462,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean passwordCheck(EditText password) {
         String passwordString = password.getText().toString();
         View focusView;
-        if (!TextUtils.isEmpty(passwordString) && passwordString.length() < 4) {
+        if (!TextUtils.isEmpty(passwordString) && passwordString.length() < 7) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = password;
             focusView.requestFocus();
@@ -447,6 +481,11 @@ public class LoginActivity extends AppCompatActivity {
             focusView.requestFocus();
             return false;
         } else if (!emailString.contains("@")) {
+            email.setError(getString(R.string.error_invalid_email));
+            focusView = email;
+            focusView.requestFocus();
+            return false;
+        } else if (!emailString.contains(".")) {
             email.setError(getString(R.string.error_invalid_email));
             focusView = email;
             focusView.requestFocus();
@@ -519,8 +558,9 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.i("signInWithCrential:suce", "point 575");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            mProgressView.setVisibility(View.INVISIBLE);
+
                             Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//
                             intent.putExtra("result", 1);
                             setResult(Activity.RESULT_OK, intent);
                             startActivity(intent);
@@ -530,7 +570,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.i("point 580", "signInWithCredential:failure", task.getException());
-//                            mProgressBar.setVisibility(View.INVISIBLE);
+                            mProgressView.setVisibility(View.INVISIBLE);
 
                         }
 
@@ -565,8 +605,9 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.i("signInWthCredntialscess", "point 610");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                            mProgressView.setVisibility(View.INVISIBLE);
 
+                            Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
                             intent.putExtra("result", 1);
                             setResult(Activity.RESULT_OK, intent);
                             Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
@@ -575,6 +616,8 @@ public class LoginActivity extends AppCompatActivity {
                             mloginButton.setEnabled(true);
                             // If sign in fails, display a message to the user.
                             Log.i("signInWithCredentl:fail", "point 621");
+                            mProgressView.setVisibility(View.INVISIBLE);
+
                             Toast.makeText(LoginActivity.this, "Please use your google acount to signin", Toast.LENGTH_SHORT).show();
                         }
 
