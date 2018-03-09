@@ -13,7 +13,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-
+    <string name="githubLink"><u><i>My Github library</i></u></string>
     <string name="facebook_app_id">157410901609235</string>
     <string name="fb_login_protocol_scheme">fb157410901609235</string>
 

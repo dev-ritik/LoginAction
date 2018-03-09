@@ -10,14 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.android.loginaction.LoginActivity">
 
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/login_form"
@@ -46,6 +38,17 @@
                     android:layout_marginBottom="50dp"
                     android:layout_marginTop="30dp"
                     android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/github"
+                    android:layout_below="@+id/logo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/githubLink"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/emailTextInputLayout"
@@ -100,7 +103,6 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:orientation="horizontal">
-
 
 
                     <Button
@@ -181,6 +183,7 @@
                     android:layout_marginBottom="50dp"
                     android:layout_marginTop="30dp"
                     android:src="@drawable/icon_profile_empty" />
+
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/emailRegisterTextInputLayout"
@@ -284,6 +287,18 @@
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:indeterminate="true"
+        android:indeterminateTint="#90A4AE"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>
 
     <!--<ProgressBar--><!--android:id="@+id/progressBar"--><!--style="?android:attr/progressBarStyleLarge"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="center"--><!--android:indeterminate="true"--><!--android:indeterminateTint="#90A4AE"--><!--android:indeterminateTintMode="src_atop"--><!--android:visibility="invisible" />-->
