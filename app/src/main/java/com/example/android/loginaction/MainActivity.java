@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseStorage mFirebaseStorage;
     public static StorageReference mProfilePicStorageReference;
-
+    private FirebaseUser user;
     private LinearLayout mainLayout;
 
     @Override
@@ -46,17 +46,22 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseStorage = FirebaseStorage.getInstance();
         mProfilePicStorageReference = mFirebaseStorage.getReference("profile_pic");
 
+        Log.i("point m49","oncreate");
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 //to find if user is signed or not
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
                 if (user != null) {
                     //user is signed
-//                    Toast.makeText(MainActivity.this, "Welcome to FriendlyChat!", Toast.LENGTH_SHORT).show();
+                    Log.i("point m58","reached");
                     onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
                 } else {
                     //user signed out
+                    Log.i("point m62","reached");
+
                     onSignOutCleaner();
                     startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
                             RC_SIGN_IN);
@@ -67,37 +72,50 @@ public class MainActivity extends AppCompatActivity {
                     snackbar.show();
                 }
             }
+
         };
+
         getSupportActionBar().setTitle("Profile");
 
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        user=mFirebaseAuth.getCurrentUser();
+        if (user!=null) {
+            onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
+        }
         TextView userName = findViewById(R.id.userName);
         mainLayout = (LinearLayout) findViewById(R.id.main_content);
 
         ImageView profilePic = findViewById(R.id.profile_image);
-        if (MainActivity.mUser != null) {
+
+
+
+        if (mUser != null) {
+            Log.i("point m84","null");
+
             userName.setText(mUser);
         } else {
             userName.setVisibility(View.GONE);
         }
 
+        TextView emailId = findViewById(R.id.email);
+        emailId.setText(mEmailId);
         try {
             if (mUserProfile != null) {
-                Log.i(mUserProfile.toString(), "standpoint pr60");
-//            Glide.with(profilePic.getContext())
-//                    .load(MainActivity.mUserProfile)
-//                    .into(profilePic);
-
-//                profilePic.setImageURI(MainActivity.mUserProfile);
+                Log.i(mUserProfile.toString(), "point m87");
                 com.squareup.picasso.Transformation transformation = new RoundedTransformationBuilder()
                         .cornerRadiusDp(30)
                         .oval(false)
                         .build();
                 Picasso.with(this)
-                        .load(mUserProfile.toString())
+                        .load(mUserProfile)
                         .transform(transformation)
+                        .fit()
+                        .centerCrop()
+                        .placeholder(R.drawable.icon_profile_empty)
+                        .error(R.drawable.ic_launcher_background)
                         .into(profilePic);
+
             } else {
                 Log.i("profile pic=null", "point 83");
 
@@ -107,8 +125,7 @@ public class MainActivity extends AppCompatActivity {
             profilePic.setImageResource(R.drawable.icon_profile_empty);
         }
 
-        TextView emailId = findViewById(R.id.email);
-        emailId.setText(mEmailId);
+
 
 
     }
@@ -117,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
         mEmailId = email;
         mUserProfile = profilePic;
         mUser = userName;
+        Log.i("point m120",userid);
+        Log.i("point m121",email);
+//        Log.i("point m122",profilePic.toString());
+        Log.i("point m123",userName);
 
     }
 
