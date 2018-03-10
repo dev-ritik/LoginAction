@@ -2,7 +2,6 @@ package com.example.android.loginaction;
 
 
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -24,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.android.loginlibrary.SimpleRegistration;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -45,11 +45,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import com.example.android.loginlibrary.SimpleLogin;
 
 /**
  * A login screen that offers login via email/password.
@@ -321,156 +318,84 @@ public class LoginActivity extends AppCompatActivity {
         password2.setError(null);
 
 //         Store values at the time of the login attempt.
-        String email = emailRegister.getText().toString();
+        final String email = emailRegister.getText().toString();
         final String userNameString = userName.getText().toString();
-        String password1String = password1.getText().toString();
-        String password2String = password2.getText().toString();
+        final String password1String = password1.getText().toString();
+        final String password2String = password2.getText().toString();
 
-//        if (!emailCheck(emailRegister)) {
-//            mProgressView.setVisibility(View.INVISIBLE);
-//            return;
-//        }
-//
-//        View focusView;
-//        if (!passwordCheck(password1)) {
-//            mProgressView.setVisibility(View.INVISIBLE);
-//            return;
-//        }
-//        if (!passwordCheck(password2)) {
-//            mProgressView.setVisibility(View.INVISIBLE);
-//            return;
-//        }
-//
-//        if (!password1String.equals(password2String)) {
-//            Toast.makeText(LoginActivity.this, "Passwords doesn't match", Toast.LENGTH_SHORT).show();
-//            focusView = password1;
-//            focusView.requestFocus();
-//            mProgressView.setVisibility(View.INVISIBLE);
-//            return;
-//        }
-//
-//        Log.i("registration attempted", "point 298");
-////        mProgressBar.setVisibility(View.VISIBLE);
-//
-//        mAuth.createUserWithEmailAndPassword(email, password1String)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            loginScreen.setVisibility(View.VISIBLE);
-//                            registerScreen.setVisibility(View.INVISIBLE);
-//                            // Sign in success, update UI with the signed-in user's information
-//                            user = mAuth.getCurrentUser();
-//                            if (selectedImageUri != null) {
-//                                if (downloadUrl != null) {
-//                                    Log.i(downloadUrl.toString(), "point 313");
-//                                    Log.i("to signup", "point 314");
-//                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                                            .setDisplayName(userNameString)
-//                                            .setPhotoUri(downloadUrl)
-//                                            .build();
-//                                    Log.i(selectedImageUri.toString(), "point 319");
-//                                    user.updateProfile(profileUpdates)
-//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                    if (task.isSuccessful()) {
-//                                                        Log.i("point 325", "User profile successfully updated.");
-//                                                        selectedImageUri = null;
-//                                                        downloadUrl = null;
-//                                                        mProgressView.setVisibility(View.INVISIBLE);
-//
-//                                                        Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//                                                        intent.putExtra("result", 1);
-//                                                        setResult(Activity.RESULT_OK, intent);
-//                                                        startActivity(intent);
-//                                                        Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-//                                                        finish();
-//                                                    }
-//                                                }
-//                                            });
-//                                } else {
-//                                    Log.i("to signup", "point 332");
-//                                    Log.i("point 349", "User profile pic upload failed.");
-//
-//                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                                            .setDisplayName(userNameString)
-//                                            .build();
-//                                    Log.i(selectedImageUri.toString(), "point 354");
-//                                    user.updateProfile(profileUpdates)
-//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                    if (task.isSuccessful()) {
-//                                                        Log.i("point 342", "User name successfully updated.");
-//                                                        selectedImageUri = null;
-//                                                        downloadUrl = null;
-//                                                        mProgressView.setVisibility(View.INVISIBLE);
-//
-//                                                        Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//                                                        intent.putExtra("result", 1);
-//                                                        setResult(Activity.RESULT_OK, intent);
-//                                                        startActivity(intent);
-//                                                        Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-//                                                        finish();
-//                                                    }
-//                                                }
-//                                            });
-//                                }
-//                            } else {
-//                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                                        .setDisplayName(userNameString)
-//                                        .build();
-//                                user.updateProfile(profileUpdates)
-//                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<Void> task) {
-//                                                if (task.isSuccessful()) {
-//                                                    Log.i("point 358", "User profile successfully updated.");
-//                                                    selectedImageUri = null;
-//                                                    downloadUrl = null;
-//                                                    mProgressView.setVisibility(View.INVISIBLE);
-//
-//                                                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//                                                    intent.putExtra("result", 1);
-//                                                    setResult(Activity.RESULT_OK, intent);
-//                                                    startActivity(intent);
-//                                                    Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-//                                                    finish();
-//                                                }
-//                                            }
-//                                        });
-//                            }
-//                            Log.i(user.getDisplayName(), "point 365");
-////                            mProgressView.setVisibility(View.INVISIBLE);
-//                        } else {
-//                            registerScreen.setVisibility(View.VISIBLE);
-//                            loginScreen.setVisibility(View.INVISIBLE);
-//                            // If sign in fails, display a message to the user.
-//                            Log.i("crteUserWithEmail:fail", "point 371");
-//                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
-//                            mProgressView.setVisibility(View.INVISIBLE);
-//                        }
-//
-//                    }
-//                });
-
-        SimpleLogin register=new SimpleLogin(getApplicationContext(),MainActivity.class);
-        Log.i("point la460","registration library");
-        register.setOnRegistrationResult("ritik", new SimpleLogin.OnRegistrationResult() {
+        SimpleRegistration register = new SimpleRegistration(getApplicationContext(), MainActivity.class);
+        Log.i("point la460", "registration library");
+        register.setOnRegistrationResult(new SimpleRegistration.OnRegistrationResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
-                Log.i("point la464","successful");
+                Log.i("point la464", "successful");
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "registration successful", Toast.LENGTH_SHORT).show();
+                Log.i("point 325", "User profile successfully updated.");
+                selectedImageUri = null;
+                downloadUrl = null;
+
+                if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password1String) && TextUtils.isEmpty(password2String)) {
+                    Log.i("point 325", "User profile successfully updated.");
+                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                    intent.putExtra("result", 1);
+                    setResult(Activity.RESULT_OK, intent);
+                    startActivity(intent);
+                }
             }
 
             @Override
-            public void resultError(AuthResult errorResult) {
-                Log.i("point la469","error");
+            public void resultError(Exception errorResult) {
+                Log.i("point la469", "error");
+                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                registerScreen.setVisibility(View.VISIBLE);
+                loginScreen.setVisibility(View.INVISIBLE);
+                mProgressView.setVisibility(View.INVISIBLE);
+            }
 
+            @Override
+            public void resultName(FirebaseUser registeredUser) {
+                Log.i("point la472", "name");
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "data updated", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                intent.putExtra("result", 1);
+                setResult(Activity.RESULT_OK, intent);
+                startActivity(intent);
+            }
+
+            @Override
+            public void resultDp(Uri dpLink) {
+                Log.i("point la478", "dp");
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "data updated", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                intent.putExtra("result", 1);
+                setResult(Activity.RESULT_OK, intent);
+                startActivity(intent);
+            }
+
+            @Override
+            public void wrongCrudentials(String errorMessage) {
+                mProgressView.setVisibility(View.INVISIBLE);
+                if (errorMessage.contains("email")) {
+                    emailRegister.setError(errorMessage);
+                    emailRegister.requestFocus();
+                } else if (errorMessage.contains("passwordinput")) {
+                    password1.setError(errorMessage);
+                    password1.requestFocus();
+                } else if (errorMessage.contains("passwordrecheck")) {
+                    password2.setError(errorMessage);
+                    password2.requestFocus();
+                } else if (errorMessage.contains("match")) {
+                    password1.setError(errorMessage);
+                    password2.setError(errorMessage);
+                    password1.requestFocus();
+                } else
+                    Toast.makeText(getApplicationContext(), "crudential error", Toast.LENGTH_SHORT).show();
             }
         });
-        register.attemptRegistration(this,getApplicationContext(),email,password1String,password2String);
+        register.attemptRegistration(this, email, password1String, password2String, userNameString, downloadUrl);
 
     }
 
