@@ -1,19 +1,11 @@
 package com.example.android.loginlibrary;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,18 +19,10 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class SimpleRegistration {
 
-    private static Context loginContext;
-    private static Class reDirectClass;
-    public static FirebaseUser user;
-    private CallbackManager mCallbackManager;
-    public static FirebaseAuth mAuth;
-    private SignInButton signInGoogleButton;
-    private GoogleSignInClient mGoogleSignInClient;
+    private static FirebaseUser user;
+    private static FirebaseAuth mAuth;
 
-    public SimpleRegistration(Context context, Class reDirectClass) {
-        this.loginContext = context;
-        this.reDirectClass = reDirectClass;
-
+    public SimpleRegistration() {
     }
 
     private OnRegistrationResult mOnRegistrationResult;
@@ -97,6 +81,11 @@ public class SimpleRegistration {
                                                     mOnRegistrationResult.resultName(user);
                                                     mOnRegistrationResult.resultDp(uploadedDpLink);
                                                 }
+                                            } else {
+                                                Log.i("point 88", "error occurred while updating user profile");
+                                                if (mOnRegistrationResult != null) {
+                                                    mOnRegistrationResult.resultError(task.getException());
+                                                }
                                             }
                                         }
                                     });
@@ -113,7 +102,7 @@ public class SimpleRegistration {
                 });
     }
 
-    public static String checkCrudentials(String email, String passwordinput, String password2) {
+    private static String checkCrudentials(String email, String passwordinput, String password2) {
         if (!emailCheck(email)) {
             return "invalid email";
         }
@@ -129,15 +118,11 @@ public class SimpleRegistration {
         return "valid";
     }
 
-    public static boolean passwordCheck(String password) {
-        if (!TextUtils.isEmpty(password) && password.length() < 7) {
-
-            return false;
-        }
-        return true;
+    private static boolean passwordCheck(String password) {
+        return TextUtils.isEmpty(password) || !(password.length() < 7);
     }
 
-    public static boolean emailCheck(String email) {
+    private static boolean emailCheck(String email) {
         if (TextUtils.isEmpty(email)) {
             Log.i("point 506", "email null");
             return false;
@@ -150,15 +135,4 @@ public class SimpleRegistration {
         }
         return true;
     }
-
-    public static boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@") && email.contains(".");
-    }
-
-    public static boolean isPasswordValid(String password, int passwordLengthMin) {
-        //TODO: Replace this with your own logic
-        return password.length() >= passwordLengthMin;
-    }
-
 }

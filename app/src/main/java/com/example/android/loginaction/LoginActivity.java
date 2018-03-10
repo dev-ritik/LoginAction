@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.android.loginlibrary.SimpleEmailLogin;
 import com.example.android.loginlibrary.SimpleRegistration;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -252,56 +253,46 @@ public class LoginActivity extends AppCompatActivity {
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        // Check for a valid password, if the user entered one.
+        SimpleEmailLogin login = new SimpleEmailLogin();
+        Log.i("point la308", "registration library");
+        login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
+            @Override
+            public void resultSuccessful(FirebaseUser registeredUser) {
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                Log.i("point 325", "login successfully");
 
-        passwordCheck(mPasswordView);
-        emailCheck(mEmailView);
+                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                intent.putExtra("result", 1);
+                setResult(Activity.RESULT_OK, intent);
+                startActivity(intent);
+            }
 
-        if (passwordCheck(mPasswordView) && (emailCheck(mEmailView))) {
+            @Override
+            public void resultError(Exception errorResult) {
+                Log.i("point la469", "error");
+                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                mProgressView.setVisibility(View.INVISIBLE);
+            }
 
-            Log.i("login attempted", "point 171");
-//            showProgress(true);
+            @Override
+            public void wrongCrudentials(String errorMessage) {
+                mProgressView.setVisibility(View.INVISIBLE);
+                if (errorMessage.contains("email")) {
+                    emailRegister.setError(errorMessage);
+                    emailRegister.requestFocus();
+                } else if (errorMessage.contains("passwordinput")) {
+                    password1.setError(errorMessage);
+                    password1.requestFocus();
+                } else
+                    Toast.makeText(getApplicationContext(), "crudential error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        login.attemptLogin(this, email, password);
 
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.i("signInWithEmail:success", "point 187");
-                                mProgressView.setVisibility(View.INVISIBLE);
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//
-                                intent.putExtra("result", 1);
-                                setResult(Activity.RESULT_OK, intent);
-                                startActivity(intent);
-                                Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-                                finish();//                                try {
-//                                    Log.i(user.getDisplayName(), "point 189");
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.i("point 236", task.getException().toString());
-
-                                mProgressView.setVisibility(View.INVISIBLE);
-                                mLoginFormView.setVisibility(View.VISIBLE);
-                                Toast.makeText(LoginActivity.this, "Login Id or Password is incorrect",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    });
-        } else {
-            mProgressView.setVisibility(View.INVISIBLE);
-            Toast.makeText(LoginActivity.this, "Try again", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void signIn() {
@@ -323,7 +314,7 @@ public class LoginActivity extends AppCompatActivity {
         final String password1String = password1.getText().toString();
         final String password2String = password2.getText().toString();
 
-        SimpleRegistration register = new SimpleRegistration(getApplicationContext(), MainActivity.class);
+        SimpleRegistration register = new SimpleRegistration();
         Log.i("point la460", "registration library");
         register.setOnRegistrationResult(new SimpleRegistration.OnRegistrationResult() {
             @Override
