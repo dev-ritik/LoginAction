@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 
 import com.example.android.loginlibrary.SimpleEmailLogin;
+import com.example.android.loginlibrary.SimpleFacebookLogin;
 import com.example.android.loginlibrary.SimpleGoogleLogin;
 import com.example.android.loginlibrary.SimpleRegistration;
 import com.facebook.AccessToken;
@@ -32,12 +33,8 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,7 +43,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -58,7 +54,8 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Id to identity READ_CONTACTS permission request.
      */
-    private final static int RC_SIGN_IN = 1;
+    private final static int RC_SIGN_IN_GOOGLE = 1;
+    private final static int RC_SIGN_IN_FACEBOOK = 3;
     private static final int RC_PHOTO_PICKER = 2;
 
     private EditText mEmailView;
@@ -70,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
     private SignInButton signInGoogleButton;
-    private GoogleSignInClient mGoogleSignInClient;
     //    private FirebaseAuth.AuthStateListener mAuthListener;
     RelativeLayout loginScreen;
     LinearLayout registerScreen;
@@ -78,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
     private SimpleGoogleLogin googleLogin;
+    private SimpleFacebookLogin facebookLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,41 +164,49 @@ public class LoginActivity extends AppCompatActivity {
                 attemptRegistration();
             }
         });
+        Log.i("point la167", "on create");
 
         mAuth = FirebaseAuth.getInstance();
 
-        mCallbackManager = CallbackManager.Factory.create();
+//        mCallbackManager = CallbackManager.Factory.create();
 
         mloginButton = findViewById(R.id.login_button);
-        mloginButton.setReadPermissions("email", "public_profile");
-        mloginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.i("got that", "facebook:onSuccess:" + loginResult);
-                mProgressView.setVisibility(View.VISIBLE);
-                handleFacebookAccessToken(loginResult.getAccessToken());
 
-            }
-
+        mloginButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onCancel() {
-                mProgressView.setVisibility(View.INVISIBLE);
-                Log.d("cancelled!!", "facebook:onCancel");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                mProgressView.setVisibility(View.INVISIBLE);
-                Log.i("error!!", "facebook:onError", error);
+            public void onClick(View v) {
+                signInFacebook();
             }
         });
+//        mloginButton.setReadPermissions("email", "public_profile");
+//        mloginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                Log.i("got that", "facebook:onSuccess:" + loginResult);
+//                mProgressView.setVisibility(View.VISIBLE);
+//                handleFacebookAccessToken(loginResult.getAccessToken());
+//
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                mProgressView.setVisibility(View.INVISIBLE);
+//                Log.i("cancelled!!", "facebook:onCancel");
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//                mProgressView.setVisibility(View.INVISIBLE);
+//                Log.i("error!!", "facebook:onError", error);
+//            }
+//        });
 
         signInGoogleButton = findViewById(R.id.signInGoogle);
         signInGoogleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mProgressView.setVisibility(View.VISIBLE);
-                signIn();
+                signInGoogle();
             }
         });
 
@@ -267,9 +272,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void signIn() {
+    private void signInGoogle() {
 
-        googleLogin = new SimpleGoogleLogin(this, RC_SIGN_IN, getString(R.string.default_web_client_id));
+        googleLogin = new SimpleGoogleLogin(this, RC_SIGN_IN_GOOGLE, getString(R.string.default_web_client_id));
         Log.i("point la303", "google login library");
         googleLogin.setOnGoogleLoginResult(new SimpleGoogleLogin.OnGoogleLoginResult() {
             @Override
@@ -287,9 +292,37 @@ public class LoginActivity extends AppCompatActivity {
             public void resultError(Exception errorResult) {
                 Log.i("point la312", "google login failed");
                 Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
-                mProgressView.setVisibility(View.INVISIBLE);}
+                mProgressView.setVisibility(View.INVISIBLE);
+            }
         });
         googleLogin.attemptGoogleLogin();
+
+    }
+
+    private void signInFacebook() {
+
+        facebookLogin = new SimpleFacebookLogin(this, RC_SIGN_IN_FACEBOOK);
+        Log.i("point la303", "google login library");
+        facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
+            @Override
+            public void resultSuccessful(FirebaseUser registeredUser) {
+                Log.i("point la307", "google login successful");
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                intent.putExtra("result", 1);
+                setResult(Activity.RESULT_OK, intent);
+                startActivity(intent);
+            }
+
+            @Override
+            public void resultError(Exception errorResult) {
+                Log.i("point la312", "google login failed");
+                Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
+                mProgressView.setVisibility(View.INVISIBLE);
+            }
+        });
+        facebookLogin.attemptFacebookLogin();
 
     }
 
@@ -386,12 +419,20 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        Log.i("point la441", (resultCode == RESULT_OK) + "");
+//        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        Log.i("point la423", (resultCode == RESULT_OK) + "");
 
 //        Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN_GOOGLE) {
+            Log.i("google result", "point 427");
+
             googleLogin.onActivityResult(requestCode, resultCode, data);
+
+        } else if (requestCode == RC_SIGN_IN_FACEBOOK) {
+            Log.i("facebook result", "point 427");
+
+            facebookLogin.onActivityResult(requestCode, resultCode, data);
+
         } else if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             selectedImageUri = data.getData();
             Log.i(selectedImageUri.toString(), "point 462");
