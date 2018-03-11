@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 
 import com.example.android.loginlibrary.SimpleEmailLogin;
+import com.example.android.loginlibrary.SimpleGoogleLogin;
 import com.example.android.loginlibrary.SimpleRegistration;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -76,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseUser user;
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
+    private SimpleGoogleLogin googleLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +87,6 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.github).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent search = new Intent(Intent.ACTION_WEB_SEARCH);
-//                search.putExtra(SearchManager.QUERY, https://github.com/ritik1991998/LoginAction);
-//                startActivity(search);
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse("https://github.com/ritik1991998/LoginAction"));
                 startActivity(i);
@@ -171,26 +170,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                if (firebaseAuth.getCurrentUser() != null) {
-//                    //pass intent ....
-//                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//
-//                    intent.putExtra("result", 1);
-//                    setResult(Activity.RESULT_OK, intent);
-////                   startActivity(intent);
-//                    Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-//                    finish();
-//                } else {
-//                    Log.i("auth state null", "point 173");
-//                    Toast.makeText(LoginActivity.this, "unregistered yet", Toast.LENGTH_SHORT).show();
-//
-//                }
-//            }
-//        };
-        // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
 
         mloginButton = findViewById(R.id.login_button);
@@ -236,13 +215,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
             }
         });
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
 
@@ -296,8 +268,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+
+        googleLogin = new SimpleGoogleLogin(this, RC_SIGN_IN, getString(R.string.default_web_client_id));
+        Log.i("point la303", "google login library");
+        googleLogin.setOnGoogleLoginResult(new SimpleGoogleLogin.OnGoogleLoginResult() {
+            @Override
+            public void resultSuccessful(FirebaseUser registeredUser) {
+                Log.i("point la307", "google login successful");
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                intent.putExtra("result", 1);
+                setResult(Activity.RESULT_OK, intent);
+                startActivity(intent);
+            }
+
+            @Override
+            public void resultError(Exception errorResult) {
+                Log.i("point la312", "google login failed");
+                Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
+                mProgressView.setVisibility(View.INVISIBLE);}
+        });
+        googleLogin.attemptGoogleLogin();
+
     }
 
     private void attemptRegistration() {
@@ -390,70 +383,15 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
-    private boolean passwordCheck(EditText password) {
-        String passwordString = password.getText().toString();
-        View focusView;
-        if (!TextUtils.isEmpty(passwordString) && passwordString.length() < 7) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = password;
-            focusView.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean emailCheck(EditText email) {
-        String emailString = email.getText().toString();
-        View focusView;
-        if (TextUtils.isEmpty(emailString)) {
-            Log.i("point 506", "email null");
-            email.setError(getString(R.string.error_field_required));
-            focusView = email;
-            focusView.requestFocus();
-            return false;
-        } else if (!emailString.contains("@")) {
-            email.setError(getString(R.string.error_invalid_email));
-            focusView = email;
-            focusView.requestFocus();
-            return false;
-        } else if (!emailString.contains(".")) {
-            email.setError(getString(R.string.error_invalid_email));
-            focusView = email;
-            focusView.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        Log.i("point la441", (resultCode == RESULT_OK) + "");
 
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+//        Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.i("", "Google sign in failed", e);
-                // ...
-            }
+            googleLogin.onActivityResult(requestCode, resultCode, data);
         } else if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             selectedImageUri = data.getData();
             Log.i(selectedImageUri.toString(), "point 462");
@@ -476,51 +414,6 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         }
-    }
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        Log.i("point 566", "firebaseAuthWithGoogle:" + account.getId());
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.i("signInWithCrential:suce", "point 575");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            mProgressView.setVisibility(View.INVISIBLE);
-
-                            Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                            intent.putExtra("result", 1);
-                            setResult(Activity.RESULT_OK, intent);
-                            startActivity(intent);
-                            Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-                            finish();
-//                            mProgressBar.setVisibility(View.INVISIBLE);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.i("point 580", "signInWithCredential:failure", task.getException());
-                            mProgressView.setVisibility(View.INVISIBLE);
-
-                        }
-
-                    }
-                });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-        // Check if user is signed in (non-null) and update UI accordingly.
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        mAuth.addAuthStateListener(mAuthListener);
     }
 
 
