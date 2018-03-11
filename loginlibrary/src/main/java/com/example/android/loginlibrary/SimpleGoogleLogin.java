@@ -112,7 +112,6 @@ public class SimpleGoogleLogin {
                             }
                         }
                         Log.i("reached", "point 114");
-
                     }
                 });
     }
