@@ -253,8 +253,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loggedIn() {
-        mProgressView.setVisibility(View.INVISIBLE);
         Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+        intentMainActivity();
+    }
+    private void intentMainActivity(){
+        mProgressView.setVisibility(View.INVISIBLE);
         Log.i("point la271", "login successfully");
 
         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
@@ -287,8 +290,6 @@ public class LoginActivity extends AppCompatActivity {
         register.setOnRegistrationResult(new SimpleRegistration.OnRegistrationResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
-                Log.i("point la464", "successful");
-                mProgressView.setVisibility(View.INVISIBLE);
                 Toast.makeText(getApplicationContext(), "registration successful", Toast.LENGTH_SHORT).show();
                 Log.i("point 325", "User profile successfully updated.");
                 selectedImageUri = null;
@@ -308,24 +309,16 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultName(FirebaseUser registeredUser) {
-                Log.i("point la472", "name");
-                mProgressView.setVisibility(View.INVISIBLE);
+
                 Toast.makeText(getApplicationContext(), "data updated", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                intent.putExtra("result", 1);
-                setResult(Activity.RESULT_OK, intent);
-                startActivity(intent);
+                intentMainActivity();
             }
 
             @Override
             public void resultDp(Uri dpLink) {
-                Log.i("point la478", "dp");
-                mProgressView.setVisibility(View.INVISIBLE);
+
                 Toast.makeText(getApplicationContext(), "data updated", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                intent.putExtra("result", 1);
-                setResult(Activity.RESULT_OK, intent);
-                startActivity(intent);
+                intentMainActivity();
             }
 
             @Override
@@ -355,16 +348,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        mCallbackManager.onActivityResult(requestCode, resultCode, data);
         Log.i("point la423", (resultCode == RESULT_OK) + "");
         if (resultCode == RESULT_OK) {
             if (!(facebookLogin == null))
                 facebookLogin.onActivityResult(requestCode, resultCode, data);
 
-//        Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
             if (requestCode == RC_SIGN_IN_GOOGLE) {
                 Log.i("google result", "point 427");
-
                 googleLogin.onActivityResult(requestCode, resultCode, data);
 
             } else if (requestCode == RC_PHOTO_PICKER) {
