@@ -1,10 +1,8 @@
 package com.example.android.loginaction;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -27,33 +25,16 @@ import com.example.android.loginlibrary.SimpleEmailLogin;
 import com.example.android.loginlibrary.SimpleFacebookLogin;
 import com.example.android.loginlibrary.SimpleGoogleLogin;
 import com.example.android.loginlibrary.SimpleRegistration;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-/**
- * A login screen that offers login via email/password.
- */
+
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
     private final static int RC_SIGN_IN_GOOGLE = 1;
     private final static int RC_SIGN_IN_FACEBOOK = 3;
     private static final int RC_PHOTO_PICKER = 2;
@@ -64,8 +45,6 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private Button mEmailSignInButton, registerButton, cancelRegistration, submitRegistration;
     private LoginButton mloginButton;
-    private CallbackManager mCallbackManager;
-    private FirebaseAuth mAuth;
     private SignInButton signInGoogleButton;
     //    private FirebaseAuth.AuthStateListener mAuthListener;
     RelativeLayout loginScreen;
@@ -166,40 +145,41 @@ public class LoginActivity extends AppCompatActivity {
         });
         Log.i("point la167", "on create");
 
-        mAuth = FirebaseAuth.getInstance();
-
-//        mCallbackManager = CallbackManager.Factory.create();
-
         mloginButton = findViewById(R.id.login_button);
 
-        mloginButton.setOnClickListener(new OnClickListener() {
+        facebookLogin = new SimpleFacebookLogin(this, RC_SIGN_IN_FACEBOOK);
+        Log.i("point la303", "google login library");
+        facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
-            public void onClick(View v) {
-                signInFacebook();
+            public void resultLoggedIn(FirebaseUser registeredUser) {
+                Log.i("point la307", "google login successful");
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+                intent.putExtra("result", 1);
+                setResult(Activity.RESULT_OK, intent);
+                startActivity(intent);
+            }
+
+            @Override
+            public void resultAccountCreated() {
+                Toast.makeText(getApplicationContext(), "account creation successful", Toast.LENGTH_SHORT).show();
+                mProgressView.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void resultCancel() {
+            }
+
+            @Override
+            public void resultError(Exception errorResult) {
+                Log.i("point la312", "google login failed");
+                Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
+                mProgressView.setVisibility(View.INVISIBLE);
             }
         });
-//        mloginButton.setReadPermissions("email", "public_profile");
-//        mloginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-//            @Override
-//            public void onSuccess(LoginResult loginResult) {
-//                Log.i("got that", "facebook:onSuccess:" + loginResult);
-//                mProgressView.setVisibility(View.VISIBLE);
-//                handleFacebookAccessToken(loginResult.getAccessToken());
-//
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//                mProgressView.setVisibility(View.INVISIBLE);
-//                Log.i("cancelled!!", "facebook:onCancel");
-//            }
-//
-//            @Override
-//            public void onError(FacebookException error) {
-//                mProgressView.setVisibility(View.INVISIBLE);
-//                Log.i("error!!", "facebook:onError", error);
-//            }
-//        });
+        facebookLogin.attemptFacebookLogin(mloginButton);
 
         signInGoogleButton = findViewById(R.id.signInGoogle);
         signInGoogleButton.setOnClickListener(new View.OnClickListener() {
@@ -259,11 +239,11 @@ public class LoginActivity extends AppCompatActivity {
             public void wrongCrudentials(String errorMessage) {
                 mProgressView.setVisibility(View.INVISIBLE);
                 if (errorMessage.contains("email")) {
-                    emailRegister.setError(errorMessage);
-                    emailRegister.requestFocus();
+                    mEmailView.setError(errorMessage);
+                    mEmailView.requestFocus();
                 } else if (errorMessage.contains("passwordinput")) {
-                    password1.setError(errorMessage);
-                    password1.requestFocus();
+                    mPasswordView.setError(errorMessage);
+                    mPasswordView.requestFocus();
                 } else
                     Toast.makeText(getApplicationContext(), "crudential error", Toast.LENGTH_SHORT).show();
             }
@@ -305,7 +285,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.i("point la303", "google login library");
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
-            public void resultSuccessful(FirebaseUser registeredUser) {
+            public void resultLoggedIn(FirebaseUser registeredUser) {
                 Log.i("point la307", "google login successful");
                 mProgressView.setVisibility(View.INVISIBLE);
                 Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
@@ -316,13 +296,24 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
+            public void resultAccountCreated() {
+                mProgressView.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void resultCancel() {
+                Toast.makeText(getApplicationContext(), "login error", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
             public void resultError(Exception errorResult) {
                 Log.i("point la312", "google login failed");
                 Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
                 mProgressView.setVisibility(View.INVISIBLE);
             }
         });
-        facebookLogin.attemptFacebookLogin();
+        facebookLogin.attemptFacebookLogin(mloginButton);
 
     }
 
@@ -421,76 +412,45 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 //        mCallbackManager.onActivityResult(requestCode, resultCode, data);
         Log.i("point la423", (resultCode == RESULT_OK) + "");
+        if (resultCode == RESULT_OK) {
+            if (!(facebookLogin == null))
+                facebookLogin.onActivityResult(requestCode, resultCode, data);
 
 //        Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN_GOOGLE) {
-            Log.i("google result", "point 427");
+            if (requestCode == RC_SIGN_IN_GOOGLE) {
+                Log.i("google result", "point 427");
 
-            googleLogin.onActivityResult(requestCode, resultCode, data);
+                googleLogin.onActivityResult(requestCode, resultCode, data);
 
-        } else if (requestCode == RC_SIGN_IN_FACEBOOK) {
-            Log.i("facebook result", "point 427");
+            } else if (requestCode == RC_SIGN_IN_FACEBOOK) {
+                Log.i("facebook result", "point 427");
 
-            facebookLogin.onActivityResult(requestCode, resultCode, data);
+                facebookLogin.onActivityResult(requestCode, resultCode, data);
 
-        } else if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
-            selectedImageUri = data.getData();
-            Log.i(selectedImageUri.toString(), "point 462");
-            dpChangeButton.setImageURI(selectedImageUri);
-            if (selectedImageUri != null) {
-                submitRegistration.setActivated(false);
-                StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
+            } else if (requestCode == RC_PHOTO_PICKER) {
+                selectedImageUri = data.getData();
+                Log.i(selectedImageUri.toString(), "point 462");
+                dpChangeButton.setImageURI(selectedImageUri);
+                if (selectedImageUri != null) {
+                    submitRegistration.setActivated(false);
+                    StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
 //                              take last part of uri location link and make child of mChatPhotosStorageReference
-                photoREf.putFile(selectedImageUri).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    //                    upload file to firebase onsucess of upload
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
-                        Log.i("success at profile up", "point 473");
+                    photoREf.putFile(selectedImageUri).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        //                    upload file to firebase onsucess of upload
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
+                            Log.i("success at profile up", "point 473");
 
-                        submitRegistration.setActivated(true);
-                    }
+                            submitRegistration.setActivated(true);
+                        }
 
-                });
+                    });
 
+                }
             }
         }
     }
-
-
-    private void handleFacebookAccessToken(AccessToken token) {
-        Log.d("", "handleFacebookAccessToken:" + token);
-
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            mloginButton.setEnabled(true);
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.i("signInWthCredntialscess", "point 610");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            mProgressView.setVisibility(View.INVISIBLE);
-
-                            Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                            intent.putExtra("result", 1);
-                            setResult(Activity.RESULT_OK, intent);
-                            Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else {
-                            mloginButton.setEnabled(true);
-                            // If sign in fails, display a message to the user.
-                            Log.i("signInWithCredentl:fail", "point 621");
-                            mProgressView.setVisibility(View.INVISIBLE);
-
-                            Toast.makeText(LoginActivity.this, "Please use your google acount to signin", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-    }
-
 
     @Override
     public void onBackPressed() {
