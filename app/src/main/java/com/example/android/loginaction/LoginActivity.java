@@ -36,7 +36,6 @@ import com.google.firebase.storage.UploadTask;
 public class LoginActivity extends AppCompatActivity {
 
     private final static int RC_SIGN_IN_GOOGLE = 1;
-    private final static int RC_SIGN_IN_FACEBOOK = 3;
     private static final int RC_PHOTO_PICKER = 2;
 
     private EditText mEmailView;
@@ -46,10 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button mEmailSignInButton, registerButton, cancelRegistration, submitRegistration;
     private LoginButton mloginButton;
     private SignInButton signInGoogleButton;
-    //    private FirebaseAuth.AuthStateListener mAuthListener;
     RelativeLayout loginScreen;
     LinearLayout registerScreen;
-    private FirebaseUser user;
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
     private SimpleGoogleLogin googleLogin;
@@ -60,63 +57,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        findViewById(R.id.github).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://github.com/ritik1991998/LoginAction"));
-                startActivity(i);
-            }
-        });
+        bindViews();
+        setListeners();
 
-        mEmailView = (EditText) findViewById(R.id.emailInput);
-
-        mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptEmailLogin();
                     return true;
                 }
                 return false;
             }
         });
-
-        loginScreen = (RelativeLayout) findViewById(R.id.loginScreen);
-        registerScreen = (LinearLayout) findViewById(R.id.registerScreen);
-
-        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        registerButton = (Button) findViewById(R.id.registerButton);
-        cancelRegistration = (Button) findViewById(R.id.cancelRegistration);
-        submitRegistration = (Button) findViewById(R.id.submitRegistration);
-
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Log.i("login started", "point 69");
-                attemptLogin();
-            }
-        });
-
-        registerButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginScreen.setVisibility(View.INVISIBLE);
-                registerScreen.setVisibility(View.VISIBLE);
-                emailRegister.setText(mEmailView.getText());
-            }
-        });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
-        emailRegister = (EditText) findViewById(R.id.emailRegister);
-        userName = (EditText) findViewById(R.id.userName);
-        password1 = (EditText) findViewById(R.id.password1);
-        password2 = (EditText) findViewById(R.id.password2);
-        dpChangeButton = (ImageView) findViewById(R.id.dpChangeButton);
 
         password2.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -129,6 +82,53 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        signInFacebook();
+    }
+
+    private void bindViews() {
+        mEmailView = (EditText) findViewById(R.id.emailInput);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        loginScreen = (RelativeLayout) findViewById(R.id.loginScreen);
+        registerScreen = (LinearLayout) findViewById(R.id.registerScreen);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        registerButton = (Button) findViewById(R.id.registerButton);
+        cancelRegistration = (Button) findViewById(R.id.cancelRegistration);
+        submitRegistration = (Button) findViewById(R.id.submitRegistration);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        emailRegister = (EditText) findViewById(R.id.emailRegister);
+        userName = (EditText) findViewById(R.id.userName);
+        password1 = (EditText) findViewById(R.id.password1);
+        password2 = (EditText) findViewById(R.id.password2);
+        dpChangeButton = (ImageView) findViewById(R.id.dpChangeButton);
+        mloginButton = findViewById(R.id.login_button);
+        signInGoogleButton = findViewById(R.id.signInGoogle);
+    }
+
+    private void setListeners() {
+        findViewById(R.id.github).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://github.com/ritik1991998/LoginAction"));
+                startActivity(i);
+            }
+        });
+        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptEmailLogin();
+            }
+        });
+
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginScreen.setVisibility(View.INVISIBLE);
+                registerScreen.setVisibility(View.VISIBLE);
+                emailRegister.setText(mEmailView.getText());
+            }
+        });
         cancelRegistration.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,45 +143,6 @@ public class LoginActivity extends AppCompatActivity {
                 attemptRegistration();
             }
         });
-        Log.i("point la167", "on create");
-
-        mloginButton = findViewById(R.id.login_button);
-
-        facebookLogin = new SimpleFacebookLogin(this, RC_SIGN_IN_FACEBOOK);
-        Log.i("point la303", "google login library");
-        facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
-            @Override
-            public void resultLoggedIn(FirebaseUser registeredUser) {
-                Log.i("point la307", "google login successful");
-                mProgressView.setVisibility(View.INVISIBLE);
-                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                intent.putExtra("result", 1);
-                setResult(Activity.RESULT_OK, intent);
-                startActivity(intent);
-            }
-
-            @Override
-            public void resultAccountCreated() {
-                Toast.makeText(getApplicationContext(), "account creation successful", Toast.LENGTH_SHORT).show();
-                mProgressView.setVisibility(View.VISIBLE);
-
-            }
-
-            @Override
-            public void resultCancel() {
-            }
-
-            @Override
-            public void resultError(Exception errorResult) {
-                Log.i("point la312", "google login failed");
-                Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
-                mProgressView.setVisibility(View.INVISIBLE);
-            }
-        });
-        facebookLogin.attemptFacebookLogin(mloginButton);
-
-        signInGoogleButton = findViewById(R.id.signInGoogle);
         signInGoogleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,10 +161,9 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
             }
         });
-
     }
 
-    private void attemptLogin() {
+    private void attemptEmailLogin() {
         // Reset errors.
         mProgressView.setVisibility(View.VISIBLE);
 
@@ -218,21 +178,12 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
-                mProgressView.setVisibility(View.INVISIBLE);
-                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
-                Log.i("point 325", "login successfully");
-
-                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                intent.putExtra("result", 1);
-                setResult(Activity.RESULT_OK, intent);
-                startActivity(intent);
+                loggedIn();
             }
 
             @Override
             public void resultError(Exception errorResult) {
-                Log.i("point la469", "error");
-                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
-                mProgressView.setVisibility(View.INVISIBLE);
+                error();
             }
 
             @Override
@@ -259,20 +210,12 @@ public class LoginActivity extends AppCompatActivity {
         googleLogin.setOnGoogleLoginResult(new SimpleGoogleLogin.OnGoogleLoginResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
-                Log.i("point la307", "google login successful");
-                mProgressView.setVisibility(View.INVISIBLE);
-                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                intent.putExtra("result", 1);
-                setResult(Activity.RESULT_OK, intent);
-                startActivity(intent);
+                loggedIn();
             }
 
             @Override
             public void resultError(Exception errorResult) {
-                Log.i("point la312", "google login failed");
-                Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
-                mProgressView.setVisibility(View.INVISIBLE);
+                error();
             }
         });
         googleLogin.attemptGoogleLogin();
@@ -281,42 +224,50 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signInFacebook() {
 
-        facebookLogin = new SimpleFacebookLogin(this, RC_SIGN_IN_FACEBOOK);
+        facebookLogin = new SimpleFacebookLogin(this);
         Log.i("point la303", "google login library");
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
             public void resultLoggedIn(FirebaseUser registeredUser) {
-                Log.i("point la307", "google login successful");
-                mProgressView.setVisibility(View.INVISIBLE);
-                Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                intent.putExtra("result", 1);
-                setResult(Activity.RESULT_OK, intent);
-                startActivity(intent);
+                loggedIn();
             }
 
             @Override
             public void resultAccountCreated() {
+                Toast.makeText(getApplicationContext(), "account creation successful", Toast.LENGTH_SHORT).show();
                 mProgressView.setVisibility(View.VISIBLE);
 
             }
 
             @Override
             public void resultCancel() {
-                Toast.makeText(getApplicationContext(), "login error", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void resultError(Exception errorResult) {
-                Log.i("point la312", "google login failed");
-                Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
-                mProgressView.setVisibility(View.INVISIBLE);
+                error();
             }
         });
         facebookLogin.attemptFacebookLogin(mloginButton);
 
     }
 
+    private void loggedIn() {
+        mProgressView.setVisibility(View.INVISIBLE);
+        Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+        Log.i("point la271", "login successfully");
+
+        Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
+        intent.putExtra("result", 1);
+        setResult(Activity.RESULT_OK, intent);
+        startActivity(intent);
+    }
+
+    private void error(){
+        Log.i("point la270", "google login failed");
+        Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
+        mProgressView.setVisibility(View.INVISIBLE);
+    }
     private void attemptRegistration() {
         // Reset errors.
         mProgressView.setVisibility(View.VISIBLE);
@@ -344,21 +295,15 @@ public class LoginActivity extends AppCompatActivity {
                 downloadUrl = null;
 
                 if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password1String) && TextUtils.isEmpty(password2String)) {
-                    Log.i("point 325", "User profile successfully updated.");
-                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-                    intent.putExtra("result", 1);
-                    setResult(Activity.RESULT_OK, intent);
-                    startActivity(intent);
+                    loggedIn();
                 }
             }
 
             @Override
             public void resultError(Exception errorResult) {
-                Log.i("point la469", "error");
-                Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                error();
                 registerScreen.setVisibility(View.VISIBLE);
                 loginScreen.setVisibility(View.INVISIBLE);
-                mProgressView.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -421,11 +366,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i("google result", "point 427");
 
                 googleLogin.onActivityResult(requestCode, resultCode, data);
-
-            } else if (requestCode == RC_SIGN_IN_FACEBOOK) {
-                Log.i("facebook result", "point 427");
-
-                facebookLogin.onActivityResult(requestCode, resultCode, data);
 
             } else if (requestCode == RC_PHOTO_PICKER) {
                 selectedImageUri = data.getData();

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,7 +46,7 @@ public class SimpleEmailLogin {
         }
         mAuth = FirebaseAuth.getInstance();
 
-        Log.i("login attempted", "point 171");
+        Log.i("login attempted", "point 49");
 
         mAuth.signInWithEmailAndPassword(email, passwordinput)
                 .addOnCompleteListener(var1, new OnCompleteListener<AuthResult>() {
@@ -56,7 +54,7 @@ public class SimpleEmailLogin {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.i("signInWithEmail:success", "point 187");
+                            Log.i("signInWithEmail:success", "point 57");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (mOnEmailLoginResult != null) {
                                 mOnEmailLoginResult.resultSuccessful(user);
@@ -94,7 +92,6 @@ public class SimpleEmailLogin {
 
     private static boolean emailCheck(String email) {
         if (TextUtils.isEmpty(email)) {
-            Log.i("point 506", "email null");
             return false;
         } else if (!email.contains("@")) {
 

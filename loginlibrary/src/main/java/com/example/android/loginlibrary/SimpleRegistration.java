@@ -54,14 +54,13 @@ public class SimpleRegistration {
         }
         mAuth = FirebaseAuth.getInstance();
 
-        Log.i("registration attempted", "point 298");
+        Log.i("registration attempted", "point 57");
 
         mAuth.createUserWithEmailAndPassword(email, passwordinput)
                 .addOnCompleteListener(var1, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             user = mAuth.getCurrentUser();
                             if (mOnRegistrationResult != null) {
                                 mOnRegistrationResult.resultSuccessful(user);
@@ -76,7 +75,7 @@ public class SimpleRegistration {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Log.i("point 325", "User profile successfully updated.");
+                                                Log.i("point 78", "User profile successfully updated.");
                                                 if (mOnRegistrationResult != null) {
                                                     mOnRegistrationResult.resultName(user);
                                                     mOnRegistrationResult.resultDp(uploadedDpLink);
@@ -91,7 +90,7 @@ public class SimpleRegistration {
                                     });
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("crteUserWithEmail:fail", "point 371");
+                            Log.i("crteUserWithEmail:fail", "point 93");
 //                            task.getResult();
                             if (mOnRegistrationResult != null) {
                                 mOnRegistrationResult.resultError(task.getException());
@@ -124,7 +123,6 @@ public class SimpleRegistration {
 
     private static boolean emailCheck(String email) {
         if (TextUtils.isEmpty(email)) {
-            Log.i("point 506", "email null");
             return false;
         } else if (!email.contains("@")) {
 
