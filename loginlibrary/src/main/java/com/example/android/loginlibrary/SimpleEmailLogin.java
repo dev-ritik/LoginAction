@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -65,11 +67,16 @@ public class SimpleEmailLogin {
                                 }
                             }
 
+                        } else {
+                            Log.i("point 70", "Login Id or Password is incorrect");
+                            if (mOnEmailLoginResult != null) {
+                                mOnEmailLoginResult.resultError(task.getException());
+                            }
                         }
                     }
+
                 });
     }
-
 
     private static String checkCrudentials(String email, String passwordinput) {
         if (!emailCheck(email)) {
