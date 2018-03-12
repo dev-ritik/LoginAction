@@ -53,8 +53,6 @@ public class SimpleFacebookLogin {
 
     public void attemptFacebookLogin(LoginButton facebookButton) {
 
-        Log.i("point 54", "reached facebook login library");
-
         mCallbackManager = CallbackManager.Factory.create();
 
         facebookButton.setReadPermissions("email", "public_profile");
@@ -87,10 +85,7 @@ public class SimpleFacebookLogin {
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.i("point 77", "handleFacebookAccessToken:" + token);
-
         mAuth = FirebaseAuth.getInstance();
-
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
@@ -114,7 +109,6 @@ public class SimpleFacebookLogin {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("point 102", "activity result");
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
