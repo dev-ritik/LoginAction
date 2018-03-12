@@ -41,10 +41,10 @@
 
                 <TextView
                     android:id="@+id/github"
-                    android:layout_below="@+id/logo"
-                    android:layout_centerHorizontal="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/logo"
+                    android:layout_centerHorizontal="true"
                     android:text="@string/githubLink"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
@@ -126,11 +126,22 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/forgetPassword"
+                    android:layout_below="@+id/signin_signup"
+                    android:padding="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@color/colorPrimary"
+                    android:text="Forget your Password?"
+                    android:textStyle="bold" />
+
                 <LinearLayout
                     android:id="@+id/OtherloginScreen"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/signin_signup"
+                    android:layout_below="@+id/forgetPassword"
                     android:layout_margin="5dp"
                     android:orientation="vertical"
                     tools:context="com.example.android.anonymoustwitter.LoginActivity">

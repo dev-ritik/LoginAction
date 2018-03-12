@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private SignInButton signInGoogleButton;
     private GoogleSignInClient mGoogleSignInClient;
-    //    private FirebaseAuth.AuthStateListener mAuthListener;
+    private TextView forgetPassword;
     RelativeLayout loginScreen;
     LinearLayout registerScreen;
     private FirebaseUser user;
@@ -116,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = (Button) findViewById(R.id.registerButton);
         cancelRegistration = (Button) findViewById(R.id.cancelRegistration);
         submitRegistration = (Button) findViewById(R.id.submitRegistration);
+        forgetPassword = (TextView) findViewById(R.id.forgetPassword);
 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -132,6 +133,29 @@ public class LoginActivity extends AppCompatActivity {
                 loginScreen.setVisibility(View.INVISIBLE);
                 registerScreen.setVisibility(View.VISIBLE);
                 emailRegister.setText(mEmailView.getText());
+            }
+        });
+
+        forgetPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mProgressView.setVisibility(View.VISIBLE);
+                if (!emailCheck(mEmailView)) {
+                    mProgressView.setVisibility(View.INVISIBLE);
+                } else {
+                    mAuth.sendPasswordResetEmail(mEmailView.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.i("point la150", "Email sent.");
+                                        mProgressView.setVisibility(View.INVISIBLE);
+                                        Toast.makeText(LoginActivity.this, "Check your email for a reset link.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+
             }
         });
 

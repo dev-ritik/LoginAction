@@ -1,7 +1,17 @@
 <resources>
     <string name="app_name">LoginLibrary</string>
 
-    <string name="facebook_app_id">157410901609235</string>
-    <string name="fb_login_protocol_scheme">fb157410901609235</string>
-
+    <!--<string name="facebook_app_id">157410901609235</string>-->
+    <!--<string name="fb_login_protocol_scheme">fb157410901609235</string>-->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
