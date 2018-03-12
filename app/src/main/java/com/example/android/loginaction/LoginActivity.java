@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
     private SimpleGoogleLogin googleLogin;
+    private TextView forgetPassword;
     private SimpleFacebookLogin facebookLogin;
 
     @Override
@@ -90,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         loginScreen = (RelativeLayout) findViewById(R.id.loginScreen);
         registerScreen = (LinearLayout) findViewById(R.id.registerScreen);
         mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        forgetPassword = (TextView) findViewById(R.id.forgetPassword);
         registerButton = (Button) findViewById(R.id.registerButton);
         cancelRegistration = (Button) findViewById(R.id.cancelRegistration);
         submitRegistration = (Button) findViewById(R.id.submitRegistration);
@@ -116,6 +118,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 attemptEmailLogin();
+            }
+        });
+
+        forgetPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptEmailPasswordReset();
             }
         });
 
@@ -162,9 +171,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptEmailLogin() {
-        // Reset errors.
         mProgressView.setVisibility(View.VISIBLE);
 
+        // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
@@ -172,7 +181,6 @@ public class LoginActivity extends AppCompatActivity {
         String password = mPasswordView.getText().toString();
 
         SimpleEmailLogin login = new SimpleEmailLogin();
-        Log.i("point la308", "registration library");
         login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
@@ -194,17 +202,50 @@ public class LoginActivity extends AppCompatActivity {
                     mPasswordView.setError(errorMessage);
                     mPasswordView.requestFocus();
                 } else
-                    Toast.makeText(getApplicationContext(), "crudential error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "credential error", Toast.LENGTH_SHORT).show();
             }
         });
         login.attemptLogin(this, email, password);
 
     }
 
+    private void attemptEmailPasswordReset() {
+        mProgressView.setVisibility(View.VISIBLE);
+
+        mEmailView.setError(null);
+        mPasswordView.setText("");
+
+        String email = mEmailView.getText().toString();
+
+        SimpleEmailLogin passwordReset = new SimpleEmailLogin();
+        passwordReset.setOnPasswordChangeResult(new SimpleEmailLogin.OnPasswordChangeResult() {
+            @Override
+            public void resultSuccessful() {
+                mProgressView.setVisibility(View.INVISIBLE);
+                Toast.makeText(LoginActivity.this, "Check your email for a reset link.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void resultError(Exception errorResult) {
+                error();
+
+            }
+
+            @Override
+            public void wrongCrudentials() {
+                mProgressView.setVisibility(View.INVISIBLE);
+                mEmailView.requestFocus();
+                Toast.makeText(getApplicationContext(), "credential error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        passwordReset.attemptPasswordReset(this, email);
+
+    }
+
+
     private void signInGoogle() {
 
         googleLogin = new SimpleGoogleLogin(this, RC_SIGN_IN_GOOGLE, getString(R.string.default_web_client_id));
-        Log.i("point la303", "google login library");
         googleLogin.setOnGoogleLoginResult(new SimpleGoogleLogin.OnGoogleLoginResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
@@ -223,7 +264,6 @@ public class LoginActivity extends AppCompatActivity {
     private void signInFacebook() {
 
         facebookLogin = new SimpleFacebookLogin(this);
-        Log.i("point la303", "google login library");
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
             public void resultLoggedIn(FirebaseUser registeredUser) {
@@ -254,7 +294,8 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
         intentMainActivity();
     }
-    private void intentMainActivity(){
+
+    private void intentMainActivity() {
         mProgressView.setVisibility(View.INVISIBLE);
         Log.i("point la271", "login successfully");
 
@@ -264,11 +305,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void error(){
-        Log.i("point la270", "google login failed");
+    private void error() {
+        Log.i("point la270", "error");
         Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
         mProgressView.setVisibility(View.INVISIBLE);
     }
+
     private void attemptRegistration() {
         // Reset errors.
         mProgressView.setVisibility(View.VISIBLE);
@@ -284,12 +326,10 @@ public class LoginActivity extends AppCompatActivity {
         final String password2String = password2.getText().toString();
 
         SimpleRegistration register = new SimpleRegistration();
-        Log.i("point la460", "registration library");
         register.setOnRegistrationResult(new SimpleRegistration.OnRegistrationResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
                 Toast.makeText(getApplicationContext(), "registration successful", Toast.LENGTH_SHORT).show();
-                Log.i("point 325", "User profile successfully updated.");
                 selectedImageUri = null;
                 downloadUrl = null;
 
@@ -352,7 +392,6 @@ public class LoginActivity extends AppCompatActivity {
                 facebookLogin.onActivityResult(requestCode, resultCode, data);
 
             if (requestCode == RC_SIGN_IN_GOOGLE) {
-                Log.i("google result", "point 427");
                 googleLogin.onActivityResult(requestCode, resultCode, data);
 
             } else if (requestCode == RC_PHOTO_PICKER) {
@@ -364,7 +403,7 @@ public class LoginActivity extends AppCompatActivity {
                     StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
 //                              take last part of uri location link and make child of mChatPhotosStorageReference
                     photoREf.putFile(selectedImageUri).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        //                    upload file to firebase onsucess of upload
+                        //                    upload file to firebase on success of upload
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
@@ -382,14 +421,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        Log.i("point 562", "back pressed");
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(startMain);
-        return;
-
     }
 }
 

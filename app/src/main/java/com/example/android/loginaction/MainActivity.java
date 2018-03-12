@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseStorage = FirebaseStorage.getInstance();
         mProfilePicStorageReference = mFirebaseStorage.getReference("profile_pic");
 
-        Log.i("point m49","oncreate");
+        Log.i("point m49", "oncreate");
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -57,11 +57,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (user != null) {
                     //user is signed
-                    Log.i("point m58","reached");
+                    Log.i("point m58", "reached");
                     onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
                 } else {
                     //user signed out
-                    Log.i("point m62","reached");
+                    Log.i("point m62", "reached");
 
                     onSignOutCleaner();
                     startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
@@ -84,16 +84,13 @@ public class MainActivity extends AppCompatActivity {
         if (user!=null) {
             onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
         }
+
         TextView userName = findViewById(R.id.userName);
         mainLayout = (LinearLayout) findViewById(R.id.main_content);
 
         ImageView profilePic = findViewById(R.id.profile_image);
 
-
-
         if (mUser != null) {
-            Log.i("point m84","null");
-
             userName.setText(mUser);
         } else {
             userName.setVisibility(View.GONE);
@@ -118,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
                         .into(profilePic);
 
             } else {
-                Log.i("profile pic=null", "point 83");
-
                 profilePic.setImageResource(R.drawable.icon_profile_empty);
             }
         } catch (Exception e) {
@@ -132,16 +127,12 @@ public class MainActivity extends AppCompatActivity {
         mEmailId = email;
         mUserProfile = profilePic;
         mUser = userName;
-        Log.i("point m120",userid);
-        Log.i("point m121",email);
-//        Log.i("point m122",profilePic.toString());
-        Log.i("point m123",userName);
 
     }
 
     private void onSignOutCleaner() {
         mEmailId = "";
-        mUser=ANONYMOUS;
+        mUser = ANONYMOUS;
         mUserProfile = null;
 
     }
@@ -180,13 +171,11 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         if (mAuthStateListener != null)
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        Log.i("onpause", "point m138");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("resume", "point m144");
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
 
     }
@@ -197,4 +186,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplicationContext().startActivity(startMain);
+    }
 }

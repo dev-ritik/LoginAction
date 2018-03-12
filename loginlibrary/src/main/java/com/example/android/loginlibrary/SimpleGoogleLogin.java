@@ -56,13 +56,9 @@ public class SimpleGoogleLogin {
         mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         activity.startActivityForResult(signInIntent, resultCodeSignIn);
-
-        Log.i("point 64", "reached");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("point 88", (resultCode == activity.RESULT_OK) + "");
-        Log.i("point 83", "activity result");
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == resultCodeSignIn) {
@@ -70,7 +66,6 @@ public class SimpleGoogleLogin {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
-                Log.i("point 75", "activity result");
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
@@ -81,10 +76,7 @@ public class SimpleGoogleLogin {
                 }
             }
 
-        } else {
-            Log.i("point 83", "signInWithCredential:failure");
         }
-
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
@@ -111,7 +103,6 @@ public class SimpleGoogleLogin {
                                 mOnGoogleLoginResult.resultError(task.getException());
                             }
                         }
-                        Log.i("reached", "point 114");
                     }
                 });
     }
