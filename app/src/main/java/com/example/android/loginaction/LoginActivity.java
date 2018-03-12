@@ -41,7 +41,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmailView;
     private EditText mPasswordView, emailRegister, userName, password1, password2;
     private View mProgressView;
-    private View mLoginFormView;
     private Button mEmailSignInButton, registerButton, cancelRegistration, submitRegistration;
     private LoginButton mloginButton;
     private SignInButton signInGoogleButton;
@@ -94,7 +93,6 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = (Button) findViewById(R.id.registerButton);
         cancelRegistration = (Button) findViewById(R.id.cancelRegistration);
         submitRegistration = (Button) findViewById(R.id.submitRegistration);
-        mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         emailRegister = (EditText) findViewById(R.id.emailRegister);
         userName = (EditText) findViewById(R.id.userName);
