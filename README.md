@@ -2,8 +2,13 @@
 
 **version 1.0**
 
-####Login Page:  
-#####A library to help making login page with [Firebase](https://firebase.google.com/docs/auth/) authentication having:
+Almost all Android Apps have a login page to allow users to login into their app. It is generally the first activity with which your user interacts with.  
+For that you need to implement your own logic to login and sign up along with designing a UI for the activity  
+
+Simple Login Library helps skip the repetitive work and helps in concentrating on the app logic by providing methods for signing in. 
+#### Login Page: 
+ 
+##### A library to help making login page with [Firebase](https://firebase.google.com/docs/auth/) authentication having:
  * [Email](https://firebase.google.com/docs/auth/android/password-auth)
  * [Facebook](https://firebase.google.com/docs/auth/android/facebook-login)
  * [Gmail](https://firebase.google.com/docs/auth/android/google-signin)
@@ -25,31 +30,31 @@
 
 ```
 allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
+    repositories {
+		    ...
+		    maven { url 'https://jitpack.io' }
 		}
 	}
 
 ```
 ```
 dependencies {
-	        compile 'com.github.ritik1991998:LoginAction:f7dd1f2d1f'
+	   compile 'com.github.ritik1991998:LoginAction:f7dd1f2d1f'
 	}
 ```
 
 3. Proceed calling login classes as [here](https://github.com/ritik1991998/LoginAction/blob/master/app/src/main/java/com/example/android/loginaction/LoginActivity.java)
-
+    * Original methods for logging in is available [here](https://github.com/ritik1991998/LoginAction/blob/actual_code/app/src/main/java/com/example/android/loginaction/LoginActivity.java)
 
 ## Contributors
    
    - [Ritik kumar](https://github.com/ritik1991998)
    
-##Contribution
+## Contribution
 
    All contributions are welcome. Encounter any issue? Don't hesitate to [open an issue](https://github.com/ritik1991998/LoginAction/issues).
 
-##Bugs
+## Bugs
 
  * Google login followed by same facebook id login leads to [this](https://i.stack.imgur.com/DDuxC.png).  
   [This](https://firebase.google.com/docs/auth/android/account-linking) seems to be addressing the issue, but still.
