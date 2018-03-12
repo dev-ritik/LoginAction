@@ -31,15 +31,15 @@ Simple Login Library helps skip the repetitive work and helps in concentrating o
 ```
 allprojects {
     repositories {
-		    ...
-		    maven { url 'https://jitpack.io' }
-		}
+		...
+	    maven { url 'https://jitpack.io' }
 	}
+}
 
 ```
 ```
 dependencies {
-	   compile 'com.github.ritik1991998:LoginAction:f7dd1f2d1f'
+	        compile 'com.github.ritik1991998:LoginAction:65c1a4d39e'
 	}
 ```
 
@@ -48,9 +48,9 @@ dependencies {
 
 ## Usage
 1. Check if your:
-* Project's build.gradle() looks [this](https://github.com/ritik1991998/LoginAction/blob/master/build.gradle)
-* App's build.gradle() looks [this](https://github.com/ritik1991998/LoginAction/blob/master/app/build.gradle)
-* Manifest() looks [this](https://github.com/ritik1991998/LoginAction/blob/master/app/src/main/AndroidManifest.xml)
+* Project's build.gradle looks [this](https://github.com/ritik1991998/LoginAction/blob/master/build.gradle)
+* App's build.gradle looks [this](https://github.com/ritik1991998/LoginAction/blob/master/app/build.gradle)
+* Manifest looks [this](https://github.com/ritik1991998/LoginAction/blob/master/app/src/main/AndroidManifest.xml)
 * Your String.xml file has:
     * facebook_app_id
     * fb_login_protocol_scheme  
@@ -111,7 +111,6 @@ SimpleEmailLogin passwordReset = new SimpleEmailLogin();
             }
             @Override
             public void resultError(Exception errorResult) {
-
             }
 
             @Override
@@ -141,7 +140,7 @@ SimpleEmailLogin passwordReset = new SimpleEmailLogin();
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == RC_SIGN_IN_GOOGLE) {
                 googleLogin.onActivityResult(requestCode, resultCode, data);
-                }
+            }
         }
     }
 
