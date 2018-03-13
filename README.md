@@ -39,7 +39,7 @@ allprojects {
 ```
 ```
 dependencies {
-	        compile 'com.github.ritik1991998:LoginAction:65c1a4d39e'
+	        compile 'com.github.ritik1991998:LoginAction:v1.0'
 	}
 ```
 
