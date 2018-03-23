@@ -39,15 +39,29 @@ allprojects {
 ```
 ```
 dependencies {
-	        compile 'com.github.ritik1991998:LoginAction:v1.0'
+	        compile 'com.github.ritik1991998:LoginAction:0122f0b5e5'
 	}
 ```
 
 3. Proceed calling login classes as [here](https://github.com/ritik1991998/LoginAction/blob/master/app/src/main/java/com/example/android/loginaction/LoginActivity.java)
     * Original methods for logging in is available [here](https://github.com/ritik1991998/LoginAction/blob/actual_code/app/src/main/java/com/example/android/loginaction/LoginActivity.java)
 
-## Usage
-1. Check if your:
+4. Modify your manifest (if using Facebook login) from :
+```
+ <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"
+            />
+```
+to
+```
+ <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"
+            tools:replace="android:value" />
+```
+5. Check if your:
+* you got your google-services.json file right.
 * Project's build.gradle looks [this](https://github.com/ritik1991998/LoginAction/blob/master/build.gradle)
 * App's build.gradle looks [this](https://github.com/ritik1991998/LoginAction/blob/master/app/build.gradle)
 * Manifest looks [this](https://github.com/ritik1991998/LoginAction/blob/master/app/src/main/AndroidManifest.xml)
@@ -55,6 +69,8 @@ dependencies {
     * facebook_app_id
     * fb_login_protocol_scheme  
     
+## Usage
+
 2. Methods for:
 
 * Email login
