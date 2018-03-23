@@ -38,9 +38,9 @@ public class SimpleFacebookLogin {
     private SimpleFacebookLogin.OnFacebookLoginResult mOnFacebookLoginResult;
 
     public interface OnFacebookLoginResult {
-        public void resultAccountCreated();
+        public void resultFacebookLoggedIn();
 
-        public void resultLoggedIn(FirebaseUser registeredUser);
+        public void resultActualLoggedIn(FirebaseUser registeredUser);
 
         public void resultCancel();
 
@@ -62,7 +62,7 @@ public class SimpleFacebookLogin {
                 Log.i("got that", "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 if (mOnFacebookLoginResult != null) {
-                    mOnFacebookLoginResult.resultAccountCreated();
+                    mOnFacebookLoginResult.resultFacebookLoggedIn();
                 }
             }
 
@@ -96,7 +96,7 @@ public class SimpleFacebookLogin {
                             Log.i("signInWthCredntialscess", "point 88");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (mOnFacebookLoginResult != null) {
-                                mOnFacebookLoginResult.resultLoggedIn(user);
+                                mOnFacebookLoginResult.resultActualLoggedIn(user);
                             }
                         } else {
                             // If sign in fails, display a message to the user.

@@ -266,16 +266,15 @@ public class LoginActivity extends AppCompatActivity {
         facebookLogin = new SimpleFacebookLogin(this);
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
-            public void resultLoggedIn(FirebaseUser registeredUser) {
-                loggedIn();
+            public void resultFacebookLoggedIn() {
+                mProgressView.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void resultAccountCreated() {
-                Toast.makeText(getApplicationContext(), "account creation successful", Toast.LENGTH_SHORT).show();
-                mProgressView.setVisibility(View.VISIBLE);
-
+            public void resultActualLoggedIn(FirebaseUser registeredUser) {
+                loggedIn();
             }
+
 
             @Override
             public void resultCancel() {
@@ -387,14 +386,14 @@ public class LoginActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("point la423", (resultCode == RESULT_OK) + "");
-        if (resultCode == RESULT_OK) {
+        if (requestCode == RC_SIGN_IN_GOOGLE) {
+            googleLogin.onActivityResult(requestCode, resultCode, data);
+
+        } else if (resultCode == RESULT_OK) {
             if (!(facebookLogin == null))
                 facebookLogin.onActivityResult(requestCode, resultCode, data);
 
-            if (requestCode == RC_SIGN_IN_GOOGLE) {
-                googleLogin.onActivityResult(requestCode, resultCode, data);
-
-            } else if (requestCode == RC_PHOTO_PICKER) {
+            else if (requestCode == RC_PHOTO_PICKER) {
                 selectedImageUri = data.getData();
                 Log.i(selectedImageUri.toString(), "point 462");
                 dpChangeButton.setImageURI(selectedImageUri);

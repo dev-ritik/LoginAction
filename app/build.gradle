@@ -21,9 +21,7 @@ android {
 repositories {
     mavenLocal()
     maven { url "https://jitpack.io" }
-    flatDir {
-        dirs 'libs'
-    }
+
 }
 
 dependencies {
@@ -41,7 +39,6 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.3.0'
 
     compile 'com.google.firebase:firebase-storage:11.8.0'
-    compile 'com.google.firebase:firebase-auth:11.8.0'
     implementation 'com.facebook.android:facebook-login:[4,5)'
     implementation('com.firebaseui:firebase-ui-auth:3.1.2') {
         exclude group: 'com.google.android.gms'
