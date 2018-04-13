@@ -101,7 +101,7 @@ public class SimpleEmailLogin {
     }
 
     private static boolean passwordCheck(String password) {
-        return TextUtils.isEmpty(password) || !(password.length() < 7);
+        return !TextUtils.isEmpty(password) && !(password.length() < 7);
     }
 
     private static boolean emailCheck(String email) {

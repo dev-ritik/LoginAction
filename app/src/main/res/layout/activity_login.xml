@@ -35,15 +35,27 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="50dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginTop="20dp"
                     android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/branch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/logo"
+                    android:layout_centerHorizontal="true"
+                    android:text="master"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="5dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/github"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/logo"
+                    android:layout_below="@+id/branch"
                     android:layout_centerHorizontal="true"
                     android:text="@string/githubLink"
                     android:textColor="@color/colorPrimary"
@@ -54,7 +66,7 @@
                     android:id="@+id/emailTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/logo"
+                    android:layout_below="@+id/github"
                     android:textColorHint="@color/black">
 
                     <EditText
@@ -229,7 +241,7 @@
                         android:imeOptions="actionNext"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="@color/black"
+                        android:textColor="@color/com_facebook_blue"
                         android:textColorHint="@color/black"
                         android:textIsSelectable="false" />
                 </android.support.design.widget.TextInputLayout>
