@@ -486,7 +486,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean passwordCheck(EditText password) {
         String passwordString = password.getText().toString();
         View focusView;
-        if (!TextUtils.isEmpty(passwordString) && passwordString.length() < 7) {
+        if (TextUtils.isEmpty(passwordString) || passwordString.length() < 7) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = password;
             focusView.requestFocus();
