@@ -76,7 +76,7 @@ to
 * Email login
 ```
 
-SimpleEmailLogin login = new SimpleEmailLogin();
+        SimpleEmailLogin login = new SimpleEmailLogin();
         login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
@@ -106,24 +106,21 @@ SimpleEmailLogin login = new SimpleEmailLogin();
 * Email register
 ```
 
- SimpleRegistration register = new SimpleRegistration();
+        SimpleRegistration register = new SimpleRegistration();
         register.setOnRegistrationResult(new SimpleRegistration.OnRegistrationResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
                  //registered but not logged in 
-
             }
 
             @Override
             public void sameEmailError(Exception errorResult) {
                 //account exists with same email Id
-              
             }
 
             @Override
             public void resultError(Exception errorResult) {
                 //some error occurred
-               
             }
 
             @Override
@@ -134,7 +131,6 @@ SimpleEmailLogin login = new SimpleEmailLogin();
             @Override
             public void resultDp(Uri dpLink) {
                //DP link updated(user already registered)
-
             }
 
             @Override
@@ -149,7 +145,7 @@ SimpleEmailLogin login = new SimpleEmailLogin();
 ```
 * Password changing
 ```
-SimpleEmailLogin passwordReset = new SimpleEmailLogin();
+        SimpleEmailLogin passwordReset = new SimpleEmailLogin();
         passwordReset.setOnPasswordChangeResult(new SimpleEmailLogin.OnPasswordChangeResult() {
             @Override
             public void resultSuccessful() {
@@ -159,7 +155,6 @@ SimpleEmailLogin passwordReset = new SimpleEmailLogin();
             @Override
             public void resultError(Exception errorResult) {
                 //some error occurred
-
             }
 
             @Override
@@ -171,74 +166,88 @@ SimpleEmailLogin passwordReset = new SimpleEmailLogin();
             public void wrongEmail(String errorMessage) {
                 //errorMessage : "empty" or "invalid"
             }
-
         });
         passwordReset.attemptPasswordReset(email);
 
 ```
 * Google login
 ```
- googleLogin = new SimpleGoogleLogin(this, RC_SIGN_IN_GOOGLE, getString(R.string.default_web_client_id));
+        googleLogin = new SimpleGoogleLogin(this, RC_SIGN_IN_GOOGLE, getString(R.string.default_web_client_id));
         googleLogin.setOnGoogleLoginResult(new SimpleGoogleLogin.OnGoogleLoginResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
+                //login successful
             }
             @Override
             public void resultError(Exception errorResult) {
+                //error occurred
             }
         });
         googleLogin.attemptGoogleLogin();
+        //googleLogin is the instance of SimpleGoogleLogin
 ```
 * In onActivityResult
 
 ```
- @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == RC_SIGN_IN_GOOGLE) {
                 googleLogin.onActivityResult(requestCode, resultCode, data);
             }
         }
-    }
-
+        //googleLogin is the instance of same SimpleGoogleLogin
 ```
 * Facebook login (**call it in oncreate method**)
 
 ```
-facebookLogin = new SimpleFacebookLogin(this);
+        facebookLogin = new SimpleFacebookLogin(this);
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
-            public void resultLoggedIn(FirebaseUser registeredUser) {
+            public void resultFacebookLoggedIn() {
+                //Facebook login successful, yet to authenticate Firebase
             }
 
             @Override
-            public void resultAccountCreated() {
+            public void resultActualLoggedIn(FirebaseUser registeredUser) {
+                //Facebook and Firebase login successful
             }
 
             @Override
             public void resultCancel() {
+                //Facebook login cancelled
+            }
+
+            @Override
+            public void accountCollisionError(Exception errorResult) {
+                error("account already exists with the different sign-in credentials");
             }
 
             @Override
             public void resultError(Exception errorResult) {
+                //Facebook or Firebase login error
             }
         });
         facebookLogin.attemptFacebookLogin(mloginButton);
 
+        //mloginButton is LoginButton from FacebookButtonBase
+        //facebookLogin is the instance of SimpleFacebookLogin
 ```
 * In onActivityResult
 ```
- @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-            if (!(facebookLogin == null))
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (!(facebookLogin == null)){
                 facebookLogin.onActivityResult(requestCode, resultCode, data);
             }
-        }
-    }
-
+        } 
+        //facebookLogin is the instance of same SimpleFacebookLogin
 ```
-
+* Signout
+````
+AuthUI.getInstance().signOut(this);
+````
 ## Contributors
    
    - [Ritik kumar](https://github.com/ritik1991998)

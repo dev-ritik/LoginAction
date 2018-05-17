@@ -291,9 +291,14 @@ public class LoginActivity extends AppCompatActivity {
                 loggedIn();
             }
 
-
             @Override
             public void resultCancel() {
+                error("cancelled");
+            }
+
+            @Override
+            public void accountCollisionError(Exception errorResult) {
+                error("account already exists with the different sign-in credentials");
             }
 
             @Override
@@ -346,7 +351,6 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "registration successful", Toast.LENGTH_SHORT).show();
                 selectedImageUri = null;
                 downloadUrl = null;
-                Log.i("point la352","yeah");
             }
 
             @Override

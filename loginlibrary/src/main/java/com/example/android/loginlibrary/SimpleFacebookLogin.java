@@ -44,6 +44,8 @@ public class SimpleFacebookLogin {
 
         public void resultCancel();
 
+        public void accountCollisionError(Exception errorResult);
+
         public void resultError(Exception errorResult);
     }
 
@@ -100,8 +102,19 @@ public class SimpleFacebookLogin {
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("signInWithCredentl:fail", "Please use your Google account");
-                            Toast.makeText(activity, "Please use your Google account", Toast.LENGTH_SHORT).show();
+                            try {
+                                throw task.getException();
+                            } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
+                                Log.i("point sfl108", "An account already exists with the same email address but different sign-in credentials");
+                                if (mOnFacebookLoginResult != null) {
+                                    mOnFacebookLoginResult.accountCollisionError(task.getException());
+                                }
+                            } catch (Exception ee) {
+                                if (mOnFacebookLoginResult != null) {
+                                    mOnFacebookLoginResult.resultError(task.getException());
+                                }
+                            }
+                            Log.i("point sfl117", task.getException().toString());
                             AuthUI.getInstance().signOut(activity);
                         }
                     }
@@ -110,6 +123,5 @@ public class SimpleFacebookLogin {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-
     }
 }
