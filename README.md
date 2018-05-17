@@ -1,19 +1,23 @@
 # LoginAction
 
+A library to help making login activity with firebase
+
 **version 1.0**
 
-Almost all Android Apps have a login page to allow users to login into their app. It is generally the first activity with which your user interacts with.  
-For that you need to implement your own logic to login and sign up along with designing a UI for the activity  
+Almost all Android Apps have a login activity to allow users to login into their app. It is generally the first activity with which your user interacts with. 
+For that you need to implement your own logic to login and sign up along with designing a UI for the activity. This requires lots of unproductive and 
+repetitive efforts to make the login smooth while checking and catching various errors and exceptions. 
 
-Simple Login Library helps skip the repetitive work and helps in concentrating on the app logic by providing methods for signing in. 
-#### Login Page: 
+Simple Login Library helps skip the repetitive work and lets you concentrate on the app logic by providing methods for signing in, when working with 
+Firebase Authentication. 
+#### Login Activity: 
  
-##### A library to help making login page with [Firebase](https://firebase.google.com/docs/auth/) authentication having:
+##### A library to help making login activity with [Firebase](https://firebase.google.com/docs/auth/) authentication having:
  * [Email](https://firebase.google.com/docs/auth/android/password-auth)
  * [Facebook](https://firebase.google.com/docs/auth/android/facebook-login)
  * [Gmail](https://firebase.google.com/docs/auth/android/google-signin)
  
- login methods for faster login page building for android applications on java.
+ login methods for faster login activity building for android applications on java.
 
 
 **Setup**

@@ -85,7 +85,7 @@ public class SimpleGoogleLogin {
                     if (mOnGoogleLoginResult != null) {
                         mOnGoogleLoginResult.networkError(e);
                     }
-                } else if (e.getStatusCode() == 7) {
+                } else if (e.getStatusCode() == 12501) {
                     if (mOnGoogleLoginResult != null) {
                         mOnGoogleLoginResult.signinCancelledByUser(e);
                     }
