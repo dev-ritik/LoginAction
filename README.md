@@ -43,7 +43,7 @@ allprojects {
 ```
 ```
 dependencies {
-	        implementation 'com.github.ritik1991998:LoginAction:1412d21172'
+	        implementation 'com.github.ritik1991998:LoginAction:cc4bd1759e'
 	}
 ```
 
