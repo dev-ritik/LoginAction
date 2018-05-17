@@ -189,18 +189,18 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultError(Exception errorResult) {
-                Log.i("point la192",errorResult.toString());
+                Log.i("point la192", errorResult.toString());
                 error("some error occurred");
             }
 
             @Override
             public void noAccountFound(Exception errorResult) {
-                Log.i("point la198",errorResult.toString());
+                Log.i("point la198", errorResult.toString());
                 error("no Account Found");
             }
 
             @Override
-            public void wrongCrudentials(String doubtfulCredentials, String errorMessage) {
+            public void wrongCredentials(String doubtfulCredentials, String errorMessage) {
                 mProgressView.setVisibility(View.INVISIBLE);
                 if (doubtfulCredentials.equals("email")) {
                     mEmailView.setError(errorMessage);
@@ -235,18 +235,26 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultError(Exception errorResult) {
+                mProgressView.setVisibility(View.INVISIBLE);
                 error("some error occurred");
 
             }
 
             @Override
-            public void wrongCrudentials() {
+            public void noAccountFound(Exception errorResult) {
+                mProgressView.setVisibility(View.INVISIBLE);
+                error("no account found");
+            }
+
+            @Override
+            public void wrongEmail(String errorMessage) {
                 mProgressView.setVisibility(View.INVISIBLE);
                 mEmailView.requestFocus();
-                Toast.makeText(getApplicationContext(), "credential error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
+
         });
-        passwordReset.attemptPasswordReset(this, email);
+        passwordReset.attemptPasswordReset(email);
 
     }
 
@@ -313,8 +321,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void error(String message) {
-        Log.i("point la270", "error");
-        Toast.makeText(getApplicationContext(),message , Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         mProgressView.setVisibility(View.INVISIBLE);
     }
 
@@ -339,10 +346,14 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "registration successful", Toast.LENGTH_SHORT).show();
                 selectedImageUri = null;
                 downloadUrl = null;
+                Log.i("point la352","yeah");
+            }
 
-                if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password1String) && TextUtils.isEmpty(password2String)) {
-                    loggedIn();
-                }
+            @Override
+            public void sameEmailError(Exception errorResult) {
+                error("account exists with same email Id");
+                registerScreen.setVisibility(View.VISIBLE);
+                loginScreen.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -361,29 +372,34 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultDp(Uri dpLink) {
-
                 Toast.makeText(getApplicationContext(), "data updated", Toast.LENGTH_SHORT).show();
                 intentMainActivity();
             }
 
             @Override
-            public void wrongCrudentials(String errorMessage) {
+            public void wrongCredentials(String doubtfulCredential, String errorMessage) {
                 mProgressView.setVisibility(View.INVISIBLE);
-                if (errorMessage.contains("email")) {
-                    emailRegister.setError(errorMessage);
-                    emailRegister.requestFocus();
-                } else if (errorMessage.contains("passwordinput")) {
-                    password1.setError(errorMessage);
-                    password1.requestFocus();
-                } else if (errorMessage.contains("passwordrecheck")) {
-                    password2.setError(errorMessage);
-                    password2.requestFocus();
-                } else if (errorMessage.contains("match")) {
-                    password1.setError(errorMessage);
-                    password2.setError(errorMessage);
-                    password1.requestFocus();
-                } else
-                    Toast.makeText(getApplicationContext(), "crudential error", Toast.LENGTH_SHORT).show();
+                switch (doubtfulCredential) {
+                    case "email":
+                        emailRegister.setError(errorMessage);
+                        emailRegister.requestFocus();
+                        break;
+                    case "password1":
+                        password1.setError(errorMessage);
+                        password1.requestFocus();
+                        break;
+                    case "password2":
+                        password2.setError(errorMessage);
+                        password2.requestFocus();
+                        break;
+                    case "password1 and password2":
+                        password1.setError(errorMessage);
+                        password2.setError(errorMessage);
+                        password1.requestFocus();
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(), "credential error", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         register.attemptRegistration(this, email, password1String, password2String, userNameString, downloadUrl);

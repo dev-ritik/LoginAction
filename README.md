@@ -75,48 +75,77 @@ to
 
 * Email login
 ```
+
 SimpleEmailLogin login = new SimpleEmailLogin();
         login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
+                //login successful : registeredUser
             }
 
             @Override
             public void resultError(Exception errorResult) {
+                //some error occurred
             }
 
             @Override
-            public void wrongCrudentials(String errorMessage) {
+            public void noAccountFound(Exception errorResult) {
+                //no account found
             }
+
+            @Override
+            public void wrongCredentials(String doubtfulCredentials, String errorMessage) {
+                //doubtfulCredentials : "email" or "password"
+                //errorMessage : "empty" or "invalid" or "short"
+            }
+
         });
         login.attemptLogin(this, email, password);
+
 ```
 * Email register
 ```
-SimpleRegistration register = new SimpleRegistration();
+
+ SimpleRegistration register = new SimpleRegistration();
         register.setOnRegistrationResult(new SimpleRegistration.OnRegistrationResult() {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
+                 //registered but not logged in 
+
+            }
+
+            @Override
+            public void sameEmailError(Exception errorResult) {
+                //account exists with same email Id
+              
             }
 
             @Override
             public void resultError(Exception errorResult) {
+                //some error occurred
+               
             }
 
             @Override
             public void resultName(FirebaseUser registeredUser) {
+                //name updated(user already registered)
             }
 
             @Override
             public void resultDp(Uri dpLink) {
+               //DP link updated(user already registered)
+
             }
 
             @Override
-            public void wrongCrudentials(String errorMessage) {
+            public void wrongCredentials(String doubtfulCredential, String errorMessage) {
+                //doubtfulCredential : "email" or "password1" or "password2" or "password1 and password2"
+                //errorMessage : "empty" or "invalid" or "short" or "not equal"
+                }
             }
         });
-        register.attemptRegistration(this, email, password1String, password2String, userNameString, downloadUrl);
-
+        register.attemptRegistration(this, email, password1, password2, userNameString, downloadUrl);
+        
 ```
 * Password changing
 ```
@@ -124,16 +153,28 @@ SimpleEmailLogin passwordReset = new SimpleEmailLogin();
         passwordReset.setOnPasswordChangeResult(new SimpleEmailLogin.OnPasswordChangeResult() {
             @Override
             public void resultSuccessful() {
-            }
-            @Override
-            public void resultError(Exception errorResult) {
+                //Check your email for a reset link
             }
 
             @Override
-            public void wrongCrudentials() {
+            public void resultError(Exception errorResult) {
+                //some error occurred
+
             }
+
+            @Override
+            public void noAccountFound(Exception errorResult) {
+                //no account found
+            }
+
+            @Override
+            public void wrongEmail(String errorMessage) {
+                //errorMessage : "empty" or "invalid"
+            }
+
         });
-        passwordReset.attemptPasswordReset(this, email);
+        passwordReset.attemptPasswordReset(email);
+
 ```
 * Google login
 ```

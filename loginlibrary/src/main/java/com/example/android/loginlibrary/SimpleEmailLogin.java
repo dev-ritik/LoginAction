@@ -9,7 +9,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
@@ -35,15 +34,17 @@ public class SimpleEmailLogin {
 
         public void resultError(Exception errorResult);
 
-        public void wrongCrudentials(String doubtfulCredentials, String errorMessage);
+        public void wrongCredentials(String doubtfulCredentials, String errorMessage);
     }
 
     public interface OnPasswordChangeResult {
         public void resultSuccessful();
 
+        public void noAccountFound(Exception errorResult);
+
         public void resultError(Exception errorResult);
 
-        public void wrongCrudentials();
+        public void wrongEmail(String errorMessage);
     }
 
     public void setOnEmailLoginResult(OnEmailLoginResult eventListener) {
@@ -56,7 +57,7 @@ public class SimpleEmailLogin {
 
     public void attemptLogin(@NonNull Activity var1, String email, String passwordinput) {
         email = email.trim();
-        if (checkCrudentials(email, passwordinput)) {
+        if (checkCredentials(email, passwordinput)) {
             mAuth = FirebaseAuth.getInstance();
 
             mAuth.signInWithEmailAndPassword(email, passwordinput)
@@ -73,11 +74,11 @@ public class SimpleEmailLogin {
                             } else {
                                 try {
                                     throw task.getException();
-                                } catch(com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
+                                } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
                                     if (mOnEmailLoginResult != null) {
                                         mOnEmailLoginResult.noAccountFound(task.getException());
                                     }
-                                }catch (Exception ee){
+                                } catch (Exception ee) {
                                     if (mOnEmailLoginResult != null) {
                                         mOnEmailLoginResult.resultError(task.getException());
                                     }
@@ -86,12 +87,11 @@ public class SimpleEmailLogin {
 
                             }
                         }
-
                     });
         }
     }
 
-    private boolean checkCrudentials(String email, String passwordinput) {
+    private boolean checkCredentials(String email, String passwordinput) {
         if (!isEmailValid(email))
             return false;
 
@@ -105,12 +105,12 @@ public class SimpleEmailLogin {
 
         if (TextUtils.isEmpty(password)) {
             if (mOnEmailLoginResult != null) {
-                mOnEmailLoginResult.wrongCrudentials("password", "empty password");
+                mOnEmailLoginResult.wrongCredentials("password", "empty");
             }
             return false;
         } else if (password.length() < 7) {
             if (mOnEmailLoginResult != null) {
-                mOnEmailLoginResult.wrongCrudentials("password", "short password");
+                mOnEmailLoginResult.wrongCredentials("password", "short");
             }
             return false;
         }
@@ -126,50 +126,26 @@ public class SimpleEmailLogin {
         Pattern pat = Pattern.compile(emailRegex);
         if (email == null) {
             if (mOnEmailLoginResult != null) {
-                mOnEmailLoginResult.wrongCrudentials("email", "empty email");
+                mOnEmailLoginResult.wrongCredentials("email", "empty");
+            }if (mOnPasswordChangeResult != null) {
+                mOnPasswordChangeResult.wrongEmail("empty email");
             }
             return false;
         }
         if (!pat.matcher(email).matches()) {
             if (mOnEmailLoginResult != null) {
-                mOnEmailLoginResult.wrongCrudentials("email", "invalid email");
+                mOnEmailLoginResult.wrongCredentials("email", "invalid");
+            }
+            if (mOnPasswordChangeResult != null) {
+                mOnPasswordChangeResult.wrongEmail("invalid");
             }
             return false;
         } else return true;
     }
 
-    private static boolean emailCheck(String email) {
-        if (TextUtils.isEmpty(email)) {
-            return false;
-        } else if (!email.contains("@")) {
-
-            return false;
-        } else if (!email.contains(".")) {
-
-            return false;
-        }
-        return true;
-    }
-
-
-//    public static void main(String[] args) {
-//        String email = "rkumar1@cs.iitr.ac.in";
-//        if (isEmailValid(email))
-//            System.out.print("Yes");
-//        else
-//            System.out.print("No");
-//    }
-
-
-    public void attemptPasswordReset(@NonNull Activity var1, String email) {
+    public void attemptPasswordReset(String email) {
         email = email.trim();
-        if (!emailCheck(email)) {
-            if (mOnPasswordChangeResult != null) {
-                mOnPasswordChangeResult.wrongCrudentials();
-                Log.i("point 59", "wrong email");
-            }
-        } else {
-            Log.i("point 64", "right email");
+        if (isEmailValid(email)) {
             mAuth = FirebaseAuth.getInstance();
             mAuth.sendPasswordResetEmail(email)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -182,8 +158,16 @@ public class SimpleEmailLogin {
                                 }
                             } else {
                                 Log.i("point 140", "Password reset error");
-                                if (mOnPasswordChangeResult != null) {
-                                    mOnPasswordChangeResult.resultError(task.getException());
+                                try {
+                                    throw task.getException();
+                                } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
+                                    if (mOnPasswordChangeResult != null) {
+                                        mOnPasswordChangeResult.noAccountFound(task.getException());
+                                    }
+                                } catch (Exception ee) {
+                                    if (mOnPasswordChangeResult != null) {
+                                        mOnPasswordChangeResult.resultError(task.getException());
+                                    }
                                 }
                             }
                         }
