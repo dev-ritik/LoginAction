@@ -78,9 +78,9 @@ public class SimpleGoogleLogin {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 e.printStackTrace();
-//                Log.i("point sga84", e.toString());
-                Log.i("point sga85", e.getStatusCode() + "");
-                Log.i("point sga86", e.getMessage() + "");
+                Log.i("81", e.getStatusCode() + "");
+                Log.i("82", e.getMessage() + "");
+
                 if (e.getStatusCode() == 7) {
                     if (mOnGoogleLoginResult != null) {
                         mOnGoogleLoginResult.networkError(e);
@@ -99,7 +99,7 @@ public class SimpleGoogleLogin {
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        Log.i("point 92", "firebaseAuthWithGoogle:" + account.getId());
+        Log.i("102", "firebaseAuthWithGoogle:" + account.getId());
 
         mAuth = FirebaseAuth.getInstance();
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -109,7 +109,6 @@ public class SimpleGoogleLogin {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.i("signInWithCrential:suce", "point 101");
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             if (mOnGoogleLoginResult != null) {
@@ -117,11 +116,11 @@ public class SimpleGoogleLogin {
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("point 109", "signInWithCredential:failure", task.getException());
+                            Log.i("119", "signInWithCredential:failure", task.getException());
                             try {
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
-                                Log.i("point sfl108", "An account already exists with the same email address but different sign-in credentials");
+                                Log.i("123", "An account already exists with the same email address but different sign-in credentials");
                                 if (mOnGoogleLoginResult != null) {
                                     mOnGoogleLoginResult.accountCollisionError(task.getException());
                                 }

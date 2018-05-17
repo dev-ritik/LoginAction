@@ -11,8 +11,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import com.google.android.gms.common.api.ApiException;
-
 import java.util.regex.Pattern;
 
 /**
@@ -33,6 +31,8 @@ public class SimpleEmailLogin {
         public void resultSuccessful(FirebaseUser registeredUser);
 
         public void noAccountFound(Exception errorResult);
+
+        public void invalidCredentials(Exception errorResult);
 
         public void resultError(Exception errorResult);
 
@@ -72,12 +72,12 @@ public class SimpleEmailLogin {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                Log.i("signInWithEmail:success", "point 57");
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (mOnEmailLoginResult != null) {
                                     mOnEmailLoginResult.resultSuccessful(user);
                                 }
                             } else {
+                                Log.i("78", "Login Id or Password is incorrect");
                                 try {
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
@@ -88,12 +88,16 @@ public class SimpleEmailLogin {
                                     if (mOnEmailLoginResult != null) {
                                         mOnEmailLoginResult.networkError(task.getException());
                                     }
+                                } catch (com.google.firebase.auth.FirebaseAuthInvalidCredentialsException e) {
+                                    if (mOnEmailLoginResult != null) {
+                                        mOnEmailLoginResult.invalidCredentials(task.getException());
+                                    }
                                 } catch (Exception ee) {
+                                    Log.i("point 90", ee.toString());
                                     if (mOnEmailLoginResult != null) {
                                         mOnEmailLoginResult.resultError(task.getException());
                                     }
                                 }
-                                Log.i("point 70", "Login Id or Password is incorrect");
 
                             }
                         }
@@ -139,7 +143,7 @@ public class SimpleEmailLogin {
                 mOnEmailLoginResult.wrongCredentials("email", "empty");
             }
             if (mOnPasswordChangeResult != null) {
-                mOnPasswordChangeResult.wrongEmail("empty email");
+                mOnPasswordChangeResult.wrongEmail("empty");
             }
             return false;
         }
@@ -163,12 +167,12 @@ public class SimpleEmailLogin {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Log.i("point 134", "Email sent.");
+                                Log.i("163", "Email sent.");
                                 if (mOnPasswordChangeResult != null) {
                                     mOnPasswordChangeResult.resultSuccessful();
                                 }
                             } else {
-                                Log.i("point 140", "Password reset error");
+                                Log.i("168", "Password reset error");
                                 try {
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {

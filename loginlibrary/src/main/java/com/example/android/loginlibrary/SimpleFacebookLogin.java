@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -20,7 +19,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 
 /**
  * Created by ritik on 11-03-2018.
@@ -38,7 +36,7 @@ public class SimpleFacebookLogin {
     private SimpleFacebookLogin.OnFacebookLoginResult mOnFacebookLoginResult;
 
     public interface OnFacebookLoginResult {
-        public void resultFacebookLoggedIn();
+        public void resultFacebookLoggedIn(LoginResult loginResult);
 
         public void resultActualLoggedIn(FirebaseUser registeredUser);
 
@@ -66,7 +64,7 @@ public class SimpleFacebookLogin {
                 Log.i("got that", "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 if (mOnFacebookLoginResult != null) {
-                    mOnFacebookLoginResult.resultFacebookLoggedIn();
+                    mOnFacebookLoginResult.resultFacebookLoggedIn(loginResult);
                 }
             }
 
@@ -97,17 +95,16 @@ public class SimpleFacebookLogin {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.i("signInWthCredntialscess", "point 88");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (mOnFacebookLoginResult != null) {
                                 mOnFacebookLoginResult.resultActualLoggedIn(user);
                             }
                         } else {
                             // If sign in fails, display a message to the user.
+                            Log.i("104", task.getException().toString());
                             try {
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
-                                Log.i("point sfl108", "An account already exists with the same email address but different sign-in credentials");
                                 if (mOnFacebookLoginResult != null) {
                                     mOnFacebookLoginResult.accountCollisionError(task.getException());
                                 }
@@ -120,7 +117,6 @@ public class SimpleFacebookLogin {
                                     mOnFacebookLoginResult.resultError(task.getException());
                                 }
                             }
-                            Log.i("point sfl117", task.getException().toString());
                             AuthUI.getInstance().signOut(activity);
                         }
                     }

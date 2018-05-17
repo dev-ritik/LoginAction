@@ -72,42 +72,6 @@ to
 ## Usage
 
 2. Methods for:
-
-* Email login
-```
-
-        SimpleEmailLogin login = new SimpleEmailLogin();
-        login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
-            @Override
-            public void resultSuccessful(FirebaseUser registeredUser) {
-                //login successful : registeredUser
-            }
-
-            @Override
-            public void noAccountFound(Exception errorResult) {
-                //no account found
-            }
-            
-            @Override
-            public void resultError(Exception errorResult) {
-                //some error occurred
-            }
-            
-            @Override
-            public void networkError(Exception errorResult) {
-                //network error occurred
-            }
-
-            @Override
-            public void wrongCredentials(String doubtfulCredentials, String errorMessage) {
-                //doubtfulCredentials : "email" or "password"
-                //errorMessage : "empty" or "invalid" or "short"
-            }
-
-        });
-        login.attemptLogin(this, email, password);
-
-```
 * Email register
 ```
 
@@ -146,12 +110,52 @@ to
             @Override
             public void wrongCredentials(String doubtfulCredential, String errorMessage) {
                 //doubtfulCredential : "email" or "password1" or "password2" or "password1 and password2"
-                //errorMessage : "empty" or "invalid" or "short" or "not equal"
+                //errorMessage : "empty" or "invalid" or "short" or "mismatch"
                 }
             }
         });
         register.attemptRegistration(this, email, password1, password2, userNameString, downloadUrl);
         
+```
+* Email login
+```
+
+        SimpleEmailLogin login = new SimpleEmailLogin();
+        login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
+            @Override
+            public void resultSuccessful(FirebaseUser registeredUser) {
+                //login successful : registeredUser
+            }
+
+            @Override
+            public void noAccountFound(Exception errorResult) {
+                //no account found
+            }
+
+            @Override
+            public void invalidCredentials(Exception errorResult) {
+                //wrong password or this is a google or facebook loggededin account");
+            }
+                        
+            @Override
+            public void resultError(Exception errorResult) {
+                //some error occurred
+            }
+            
+            @Override
+            public void networkError(Exception errorResult) {
+                //network error occurred
+            }
+
+            @Override
+            public void wrongCredentials(String doubtfulCredentials, String errorMessage) {
+                //doubtfulCredentials : "email" or "password"
+                //errorMessage : "empty" or "invalid" or "short"
+            }
+
+        });
+        login.attemptLogin(this, email, password);
+
 ```
 * Password changing
 ```
@@ -235,7 +239,7 @@ to
         facebookLogin = new SimpleFacebookLogin(this);
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
-            public void resultFacebookLoggedIn() {
+            public void resultFacebookLoggedIn(LoginResult loginResult) {
                 //Facebook login successful, yet to authenticate Firebase
             }
 
@@ -284,6 +288,25 @@ to
 ````
 AuthUI.getInstance().signOut(this);
 ````
+
+**Arguments for wrong credentials**
+
+|Method         |library class       |doubtfulCredentials         |errorMessage      |
+|---------------|--------------------|----------------------------|------------------|
+|Registration   |SimpleRegistration  | email                      |empty             |
+|Registration   |SimpleRegistration  | email                      |invalid           |
+|Registration   |SimpleRegistration  | password1                  |empty             |
+|Registration   |SimpleRegistration  | password1                  |short             |
+|Registration   |SimpleRegistration  | password2                  |empty             |
+|Registration   |SimpleRegistration  | password2                  |short             |
+|Registration   |SimpleRegistration  | password1 and password2    |mismatch          |
+|Email login    |SimpleEmailLogin    | email                      |empty             |
+|Email login    |SimpleEmailLogin    | email                      |invalid           |
+|Email login    |SimpleEmailLogin    | password                   |empty             |
+|Email login    |SimpleEmailLogin    | password                   |short             |
+|Password reset |SimpleEmailLogin    |  ----                      |empty             |
+|Password reset |SimpleEmailLogin    |  ----                      |invalid           |
+
 ## Contributors
    
    - [Ritik kumar](https://github.com/ritik1991998)

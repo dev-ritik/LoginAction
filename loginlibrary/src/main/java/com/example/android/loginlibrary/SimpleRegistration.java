@@ -73,14 +73,13 @@ public class SimpleRegistration {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Log.i("point 78", "User profile successfully updated.");
+                                                    Log.i("76", "User profile successfully updated.");
                                                     if (mOnRegistrationResult != null) {
                                                         mOnRegistrationResult.resultName(user);
                                                         mOnRegistrationResult.resultDp(uploadedDpLink);
                                                     }
                                                 } else {
-                                                    Log.i("point 78", "error occurred while updating user profile");
-                                                    Log.i("point 79", task.getException().toString());
+                                                    Log.i("82", task.getException().toString());
                                                     if (mOnRegistrationResult != null) {
                                                         mOnRegistrationResult.resultError(task.getException());
                                                     }
@@ -89,8 +88,7 @@ public class SimpleRegistration {
                                         });
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Log.i("crteUserWithEmail:fail", "point 93");
-                                Log.i("point 91", task.getException().toString());
+                                Log.i("91", task.getException().toString());
                                 try {
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
@@ -123,9 +121,9 @@ public class SimpleRegistration {
             return false;
         }
         if (!password1.equals(password2)) {
-            Log.i("point sr109", "unequal");
+            Log.i("124", "unequal");
             if (mOnRegistrationResult != null) {
-                mOnRegistrationResult.wrongCredentials("password1 and password2", "not equal");
+                mOnRegistrationResult.wrongCredentials("password1 and password2", "mismatch");
             }
             return false;
         }
@@ -163,19 +161,6 @@ public class SimpleRegistration {
             if (mOnRegistrationResult != null) {
                 mOnRegistrationResult.wrongCredentials("password" + passwordNumber, "short");
             }
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean emailCheck(String email) {
-        if (TextUtils.isEmpty(email)) {
-            return false;
-        } else if (!email.contains("@")) {
-
-            return false;
-        } else if (!email.contains(".")) {
-
             return false;
         }
         return true;

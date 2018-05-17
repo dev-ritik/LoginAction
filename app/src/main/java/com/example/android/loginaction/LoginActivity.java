@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,6 +24,7 @@ import com.example.android.loginlibrary.SimpleEmailLogin;
 import com.example.android.loginlibrary.SimpleFacebookLogin;
 import com.example.android.loginlibrary.SimpleGoogleLogin;
 import com.example.android.loginlibrary.SimpleRegistration;
+import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -193,6 +193,11 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
+            public void invalidCredentials(Exception errorResult) {
+                error("wrong password or this is a google or facebook loggedin account");
+            }
+
+            @Override
             public void resultError(Exception errorResult) {
                 error("some error occurred");
             }
@@ -244,7 +249,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void resultError(Exception errorResult) {
                 error("some error occurred");
-
             }
 
             @Override
@@ -302,7 +306,7 @@ public class LoginActivity extends AppCompatActivity {
         facebookLogin = new SimpleFacebookLogin(this);
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
-            public void resultFacebookLoggedIn() {
+            public void resultFacebookLoggedIn(LoginResult loginResult) {
                 mProgressView.setVisibility(View.VISIBLE);
             }
 
@@ -453,7 +457,6 @@ public class LoginActivity extends AppCompatActivity {
 
             else if (requestCode == RC_PHOTO_PICKER) {
                 selectedImageUri = data.getData();
-                Log.i(selectedImageUri.toString(), "point 462");
                 dpChangeButton.setImageURI(selectedImageUri);
                 if (selectedImageUri != null) {
                     submitRegistration.setActivated(false);
@@ -464,7 +467,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
-                            Log.i("success at profile up", "point 473");
+                            Log.i("profile uploaded", "point 473");
 
                             submitRegistration.setActivated(true);
                         }

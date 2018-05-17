@@ -42,12 +42,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        AuthUI.getInstance().signOut(this);//
 
         mFirebaseStorage = FirebaseStorage.getInstance();
         mProfilePicStorageReference = mFirebaseStorage.getReference("profile_pic");
-
-        Log.i("point m49", "oncreate");
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -57,11 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (user != null) {
                     //user is signed
-                    Log.i("point m58", "reached");
+                    Log.i("point m58", "user != null");
                     onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
                 } else {
                     //user signed out
-                    Log.i("point m62", "reached");
+                    Log.i("point m62", "user = null");
 
                     onSignOutCleaner();
                     startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
@@ -77,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         getSupportActionBar().setTitle("Profile");
-
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         user=mFirebaseAuth.getCurrentUser();
