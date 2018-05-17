@@ -84,13 +84,18 @@ to
             }
 
             @Override
+            public void noAccountFound(Exception errorResult) {
+                //no account found
+            }
+            
+            @Override
             public void resultError(Exception errorResult) {
                 //some error occurred
             }
-
+            
             @Override
-            public void noAccountFound(Exception errorResult) {
-                //no account found
+            public void networkError(Exception errorResult) {
+                //network error occurred
             }
 
             @Override
@@ -118,6 +123,11 @@ to
                 //account exists with same email Id
             }
 
+            @Override
+            public void networkError(Exception errorResult) {
+                //network error occurred
+            }
+            
             @Override
             public void resultError(Exception errorResult) {
                 //some error occurred
@@ -153,15 +163,20 @@ to
             }
 
             @Override
+            public void noAccountFound(Exception errorResult) {
+                //no account found
+            }
+            
+            @Override
             public void resultError(Exception errorResult) {
                 //some error occurred
             }
 
             @Override
-            public void noAccountFound(Exception errorResult) {
-                //no account found
+            public void networkError(Exception errorResult) {
+                //network error occurred
             }
-
+            
             @Override
             public void wrongEmail(String errorMessage) {
                 //errorMessage : "empty" or "invalid"
@@ -178,6 +193,22 @@ to
             public void resultSuccessful(FirebaseUser registeredUser) {
                 //login successful
             }
+            
+            @Override
+            public void signinCancelledByUser(Exception errorResult) {
+                //signin cancelled by user
+            }
+            
+            @Override
+            public void accountCollisionError(Exception errorResult) {
+                //account exists with same email Id
+            }
+
+            @Override
+            public void networkError(Exception errorResult) {
+                //network error occurred
+            }
+            
             @Override
             public void resultError(Exception errorResult) {
                 //error occurred
@@ -220,9 +251,14 @@ to
 
             @Override
             public void accountCollisionError(Exception errorResult) {
-                error("account already exists with the different sign-in credentials");
+                //account already exists with the different sign-in credentials
             }
-
+            
+            @Override
+            public void networkError(Exception errorResult) {
+                //network error occurred
+            }
+            
             @Override
             public void resultError(Exception errorResult) {
                 //Facebook or Firebase login error

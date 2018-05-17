@@ -11,6 +11,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.android.gms.common.api.ApiException;
+
 import java.util.regex.Pattern;
 
 /**
@@ -34,6 +36,8 @@ public class SimpleEmailLogin {
 
         public void resultError(Exception errorResult);
 
+        public void networkError(Exception errorResult);
+
         public void wrongCredentials(String doubtfulCredentials, String errorMessage);
     }
 
@@ -43,6 +47,8 @@ public class SimpleEmailLogin {
         public void noAccountFound(Exception errorResult);
 
         public void resultError(Exception errorResult);
+
+        public void networkError(Exception errorResult);
 
         public void wrongEmail(String errorMessage);
     }
@@ -77,6 +83,10 @@ public class SimpleEmailLogin {
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
                                     if (mOnEmailLoginResult != null) {
                                         mOnEmailLoginResult.noAccountFound(task.getException());
+                                    }
+                                } catch (com.google.firebase.FirebaseNetworkException e) {
+                                    if (mOnEmailLoginResult != null) {
+                                        mOnEmailLoginResult.networkError(task.getException());
                                     }
                                 } catch (Exception ee) {
                                     if (mOnEmailLoginResult != null) {
@@ -127,7 +137,8 @@ public class SimpleEmailLogin {
         if (email == null) {
             if (mOnEmailLoginResult != null) {
                 mOnEmailLoginResult.wrongCredentials("email", "empty");
-            }if (mOnPasswordChangeResult != null) {
+            }
+            if (mOnPasswordChangeResult != null) {
                 mOnPasswordChangeResult.wrongEmail("empty email");
             }
             return false;
@@ -164,7 +175,11 @@ public class SimpleEmailLogin {
                                     if (mOnPasswordChangeResult != null) {
                                         mOnPasswordChangeResult.noAccountFound(task.getException());
                                     }
-                                } catch (Exception ee) {
+                                } catch (com.google.firebase.FirebaseNetworkException e) {
+                                    if (mOnPasswordChangeResult != null) {
+                                        mOnPasswordChangeResult.networkError(task.getException());
+                                    }
+                                } catch (Exception e) {
                                     if (mOnPasswordChangeResult != null) {
                                         mOnPasswordChangeResult.resultError(task.getException());
                                     }

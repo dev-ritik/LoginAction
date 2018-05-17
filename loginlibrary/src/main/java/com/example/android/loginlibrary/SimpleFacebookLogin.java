@@ -46,6 +46,8 @@ public class SimpleFacebookLogin {
 
         public void accountCollisionError(Exception errorResult);
 
+        public void networkError(Exception errorResult);
+
         public void resultError(Exception errorResult);
     }
 
@@ -108,6 +110,10 @@ public class SimpleFacebookLogin {
                                 Log.i("point sfl108", "An account already exists with the same email address but different sign-in credentials");
                                 if (mOnFacebookLoginResult != null) {
                                     mOnFacebookLoginResult.accountCollisionError(task.getException());
+                                }
+                            } catch (com.google.firebase.FirebaseNetworkException e) {
+                                if (mOnFacebookLoginResult != null) {
+                                    mOnFacebookLoginResult.networkError(task.getException());
                                 }
                             } catch (Exception ee) {
                                 if (mOnFacebookLoginResult != null) {

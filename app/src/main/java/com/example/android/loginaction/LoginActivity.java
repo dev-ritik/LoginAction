@@ -188,15 +188,18 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
+            public void noAccountFound(Exception errorResult) {
+                error("no Account Found");
+            }
+
+            @Override
             public void resultError(Exception errorResult) {
-                Log.i("point la192", errorResult.toString());
                 error("some error occurred");
             }
 
             @Override
-            public void noAccountFound(Exception errorResult) {
-                Log.i("point la198", errorResult.toString());
-                error("no Account Found");
+            public void networkError(Exception errorResult) {
+                error("network error occurred");
             }
 
             @Override
@@ -234,30 +237,32 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
+            public void noAccountFound(Exception errorResult) {
+                error("no account found");
+            }
+
+            @Override
             public void resultError(Exception errorResult) {
-                mProgressView.setVisibility(View.INVISIBLE);
                 error("some error occurred");
 
             }
 
             @Override
-            public void noAccountFound(Exception errorResult) {
-                mProgressView.setVisibility(View.INVISIBLE);
-                error("no account found");
+            public void networkError(Exception errorResult) {
+                error("network error occurred");
             }
 
             @Override
             public void wrongEmail(String errorMessage) {
                 mProgressView.setVisibility(View.INVISIBLE);
+                mEmailView.setError(errorMessage);
                 mEmailView.requestFocus();
                 Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
 
         });
         passwordReset.attemptPasswordReset(email);
-
     }
-
 
     private void signInGoogle() {
 
@@ -266,6 +271,21 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void resultSuccessful(FirebaseUser registeredUser) {
                 loggedIn();
+            }
+
+            @Override
+            public void signinCancelledByUser(Exception errorResult) {
+
+            }
+
+            @Override
+            public void accountCollisionError(Exception errorResult) {
+                error("account exists with same email Id");
+            }
+
+            @Override
+            public void networkError(Exception errorResult) {
+                error("network error occurred");
             }
 
             @Override
@@ -299,6 +319,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void accountCollisionError(Exception errorResult) {
                 error("account already exists with the different sign-in credentials");
+            }
+
+            @Override
+            public void networkError(Exception errorResult) {
+                error("network error occurred");
             }
 
             @Override
@@ -358,6 +383,11 @@ public class LoginActivity extends AppCompatActivity {
                 error("account exists with same email Id");
                 registerScreen.setVisibility(View.VISIBLE);
                 loginScreen.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void networkError(Exception errorResult) {
+                error("network error occurred");
             }
 
             @Override

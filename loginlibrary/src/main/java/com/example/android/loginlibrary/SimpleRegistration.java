@@ -34,6 +34,8 @@ public class SimpleRegistration {
 
         public void sameEmailError(Exception errorResult);
 
+        public void networkError(Exception errorResult);
+
         public void resultError(Exception errorResult);
 
         public void resultName(FirebaseUser registeredUser);
@@ -88,12 +90,16 @@ public class SimpleRegistration {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.i("crteUserWithEmail:fail", "point 93");
-                                Log.i( "point 91",task.getException().toString());
+                                Log.i("point 91", task.getException().toString());
                                 try {
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
                                     if (mOnRegistrationResult != null) {
                                         mOnRegistrationResult.sameEmailError(task.getException());
+                                    }
+                                } catch (com.google.firebase.FirebaseNetworkException e) {
+                                    if (mOnRegistrationResult != null) {
+                                        mOnRegistrationResult.networkError(task.getException());
                                     }
                                 } catch (Exception ee) {
                                     if (mOnRegistrationResult != null) {
