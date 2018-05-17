@@ -189,21 +189,29 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultError(Exception errorResult) {
-                error();
+                Log.i("point la192",errorResult.toString());
+                error("some error occurred");
             }
 
             @Override
-            public void wrongCrudentials(String errorMessage) {
+            public void noAccountFound(Exception errorResult) {
+                Log.i("point la198",errorResult.toString());
+                error("no Account Found");
+            }
+
+            @Override
+            public void wrongCrudentials(String doubtfulCredentials, String errorMessage) {
                 mProgressView.setVisibility(View.INVISIBLE);
-                if (errorMessage.contains("email")) {
+                if (doubtfulCredentials.equals("email")) {
                     mEmailView.setError(errorMessage);
                     mEmailView.requestFocus();
-                } else if (errorMessage.contains("passwordinput")) {
+                } else if (doubtfulCredentials.equals("password")) {
                     mPasswordView.setError(errorMessage);
                     mPasswordView.requestFocus();
                 } else
                     Toast.makeText(getApplicationContext(), "credential error", Toast.LENGTH_SHORT).show();
             }
+
         });
         login.attemptLogin(this, email, password);
 
@@ -227,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultError(Exception errorResult) {
-                error();
+                error("some error occurred");
 
             }
 
@@ -254,7 +262,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultError(Exception errorResult) {
-                error();
+                error("some error occurred");
             }
         });
         googleLogin.attemptGoogleLogin();
@@ -282,7 +290,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultError(Exception errorResult) {
-                error();
+                error("some error occurred");
             }
         });
         facebookLogin.attemptFacebookLogin(mloginButton);
@@ -304,9 +312,9 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void error() {
+    private void error(String message) {
         Log.i("point la270", "error");
-        Toast.makeText(getApplicationContext(), "some error occurred", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),message , Toast.LENGTH_SHORT).show();
         mProgressView.setVisibility(View.INVISIBLE);
     }
 
@@ -339,7 +347,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultError(Exception errorResult) {
-                error();
+                error("some error occurred");
                 registerScreen.setVisibility(View.VISIBLE);
                 loginScreen.setVisibility(View.INVISIBLE);
             }
