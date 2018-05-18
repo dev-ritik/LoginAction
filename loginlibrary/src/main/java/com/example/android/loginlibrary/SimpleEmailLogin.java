@@ -77,7 +77,7 @@ public class SimpleEmailLogin {
                                     mOnEmailLoginResult.resultSuccessful(user);
                                 }
                             } else {
-                                Log.i("78", "Login Id or Password is incorrect");
+                                Log.i("78", task.getException().toString());
                                 try {
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
@@ -172,7 +172,7 @@ public class SimpleEmailLogin {
                                     mOnPasswordChangeResult.resultSuccessful();
                                 }
                             } else {
-                                Log.i("168", "Password reset error");
+                                Log.i("168", task.getException().toString());
                                 try {
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
@@ -182,6 +182,10 @@ public class SimpleEmailLogin {
                                 } catch (com.google.firebase.FirebaseNetworkException e) {
                                     if (mOnPasswordChangeResult != null) {
                                         mOnPasswordChangeResult.networkError(task.getException());
+                                    }
+                                }catch (com.google.firebase.FirebaseException e) {
+                                    if (mOnPasswordChangeResult != null) {
+                                        mOnPasswordChangeResult.noAccountFound(task.getException());
                                     }
                                 } catch (Exception e) {
                                     if (mOnPasswordChangeResult != null) {

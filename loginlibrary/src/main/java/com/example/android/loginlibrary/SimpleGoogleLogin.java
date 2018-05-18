@@ -116,7 +116,7 @@ public class SimpleGoogleLogin {
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("119", "signInWithCredential:failure", task.getException());
+                            Log.i("119",  task.getException().toString());
                             try {
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
@@ -128,7 +128,7 @@ public class SimpleGoogleLogin {
                                 if (mOnGoogleLoginResult != null) {
                                     mOnGoogleLoginResult.networkError(task.getException());
                                 }
-                            } catch (Exception ee) {
+                            } catch (Exception e) {
                                 if (mOnGoogleLoginResult != null) {
                                     mOnGoogleLoginResult.resultError(task.getException());
                                 }

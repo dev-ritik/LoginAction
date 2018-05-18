@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmailView;
     private EditText mPasswordView, emailRegister, userName, password1, password2;
     private View mProgressView;
-    private Button mEmailSignInButton, registerButton, cancelRegistration, submitRegistration;
+    private Button mEmailSignInButton, submitRegistration;
     private LoginButton mloginButton;
     private SignInButton signInGoogleButton;
     RelativeLayout loginScreen;
@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
     private SimpleGoogleLogin googleLogin;
-    private TextView forgetPassword;
+    private TextView forgetPassword,registerText,cancelRegistration;
     private SimpleFacebookLogin facebookLogin;
 
     @Override
@@ -92,8 +92,8 @@ public class LoginActivity extends AppCompatActivity {
         registerScreen = (LinearLayout) findViewById(R.id.registerScreen);
         mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         forgetPassword = (TextView) findViewById(R.id.forgetPassword);
-        registerButton = (Button) findViewById(R.id.registerButton);
-        cancelRegistration = (Button) findViewById(R.id.cancelRegistration);
+        registerText = (TextView) findViewById(R.id.registerText);
+        cancelRegistration = (TextView) findViewById(R.id.cancelRegistration);
         submitRegistration = (Button) findViewById(R.id.submitRegistration);
         mProgressView = findViewById(R.id.login_progress);
         emailRegister = (EditText) findViewById(R.id.emailRegister);
@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        registerButton.setOnClickListener(new OnClickListener() {
+        registerText.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginScreen.setVisibility(View.INVISIBLE);
