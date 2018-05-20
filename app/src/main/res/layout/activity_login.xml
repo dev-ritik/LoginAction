@@ -10,7 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.android.loginaction.LoginActivity">
 
-
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -37,7 +36,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="25dp"
                     android:layout_marginTop="20dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@mipmap/ic_launcher_1" />
 
                 <TextView
                     android:id="@+id/branch"
@@ -96,7 +95,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_password"
-                        android:imeActionId="6"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
@@ -107,63 +105,40 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-                <LinearLayout
-                    android:id="@+id/signin_signup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/passwordTextInputLayout"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
-
-
-                    <Button
-                        android:id="@+id/registerButton"
-                        style="?android:textAppearanceSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="SignUp"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/email_sign_in_button"
-                        style="?android:textAppearanceSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/action_sign_in"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
                 <TextView
                     android:id="@+id/forgetPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@+id/signin_signup"
+                    android:layout_below="@+id/passwordTextInputLayout"
                     android:padding="4dp"
-                    android:text="Forget your Password?"
+                    android:text="Forget Password?"
                     android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/email_sign_in_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/forgetPassword"
+                    android:text="login"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/OtherloginScreen"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/forgetPassword"
+                    android:layout_below="@+id/email_sign_in_button"
                     android:layout_margin="5dp"
                     android:orientation="vertical"
                     tools:context="com.example.android.anonymoustwitter.LoginActivity">
-
 
                     <View
                         android:layout_width="wrap_content"
                         android:layout_height="2dp"
                         android:background="@color/black" />
-
 
                     <com.google.android.gms.common.SignInButton
                         android:id="@+id/signInGoogle"
@@ -189,6 +164,17 @@
                         android:paddingTop="10dp" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/registerText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/OtherloginScreen"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp"
+                    android:text="no account yet?Create one"
+                    android:textColor="@color/colorPrimary" />
+
             </RelativeLayout>
 
             <LinearLayout
@@ -203,7 +189,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="50dp"
+                    android:layout_marginBottom="40dp"
                     android:layout_marginTop="30dp"
                     android:src="@drawable/icon_profile_empty" />
 
@@ -241,7 +227,7 @@
                         android:imeOptions="actionNext"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="@color/black"
+                        android:textColor="@color/com_facebook_blue"
                         android:textColorHint="@color/black"
                         android:textIsSelectable="false" />
                 </android.support.design.widget.TextInputLayout>
@@ -284,29 +270,21 @@
                         android:textIsSelectable="false" />
                 </android.support.design.widget.TextInputLayout>
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/submitRegistration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:text="create account"
+                    android:textColor="@color/colorPrimaryDark" />
 
-
-                    <Button
-                        android:id="@+id/cancelRegistration"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="cancel"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <Button
-                        android:id="@+id/submitRegistration"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Register"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/cancelRegistration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="4dp"
+                    android:text="Already a member?Login"
+                    android:textColor="@color/colorPrimary" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
@@ -323,5 +301,3 @@
         android:indeterminateTintMode="src_atop"
         android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>
-
-    <!--<ProgressBar--><!--android:id="@+id/progressBar"--><!--style="?android:attr/progressBarStyleLarge"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="center"--><!--android:indeterminate="true"--><!--android:indeterminateTint="#90A4AE"--><!--android:indeterminateTintMode="src_atop"--><!--android:visibility="invisible" />-->
