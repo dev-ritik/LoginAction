@@ -32,16 +32,15 @@ Firebase Authentication.
     * Add the following dependency to your app's build.gradle file:
 
 
-```
+```groovy
 allprojects {
     repositories {
-		...
 	    maven { url 'https://jitpack.io' }
 	}
 }
 
 ```
-```
+```groovy
 dependencies {
 	        implementation 'com.github.ritik1991998:LoginAction:cc4bd1759e'
 	}
@@ -51,14 +50,14 @@ dependencies {
     * Original methods for logging in is available [here](https://github.com/ritik1991998/LoginAction/blob/actual_code/app/src/main/java/com/example/android/loginaction/LoginActivity.java)
 
 4. Modify your manifest (if using Facebook login) from :
-```
+```xml
  <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
             />
 ```
 to
-```
+```xml
  <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
@@ -77,7 +76,7 @@ to
 
 2. Methods for:
 * Email register
-```
+```java
 
         SimpleRegistration register = new SimpleRegistration();
         register.setOnRegistrationResult(new SimpleRegistration.OnRegistrationResult() {
@@ -122,7 +121,7 @@ to
         
 ```
 * Email login
-```
+```java
 
         SimpleEmailLogin login = new SimpleEmailLogin();
         login.setOnEmailLoginResult(new SimpleEmailLogin.OnEmailLoginResult() {
@@ -162,7 +161,7 @@ to
 
 ```
 * Password changing
-```
+```java
         SimpleEmailLogin passwordReset = new SimpleEmailLogin();
         passwordReset.setOnPasswordChangeResult(new SimpleEmailLogin.OnPasswordChangeResult() {
             @Override
@@ -194,7 +193,7 @@ to
 
 ```
 * Google login
-```
+```java
         googleLogin = new SimpleGoogleLogin(this, RC_SIGN_IN_GOOGLE, getString(R.string.default_web_client_id));
         googleLogin.setOnGoogleLoginResult(new SimpleGoogleLogin.OnGoogleLoginResult() {
             @Override
@@ -227,7 +226,7 @@ to
 ```
 * In onActivityResult
 
-```
+```java
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -239,7 +238,7 @@ to
 ```
 * Facebook login (**call it in oncreate method**)
 
-```
+```java
         facebookLogin = new SimpleFacebookLogin(this);
         facebookLogin.setOnFacebookLoginResult(new SimpleFacebookLogin.OnFacebookLoginResult() {
             @Override
@@ -278,7 +277,7 @@ to
         //facebookLogin is the instance of SimpleFacebookLogin
 ```
 * In onActivityResult
-```
+```java
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -289,7 +288,7 @@ to
         //facebookLogin is the instance of same SimpleFacebookLogin
 ```
 * Signout
-````
+````java
 AuthUI.getInstance().signOut(this);
 ````
 

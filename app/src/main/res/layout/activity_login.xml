@@ -112,28 +112,9 @@
                     android:layout_alignParentEnd="true"
                     android:layout_below="@+id/passwordTextInputLayout"
                     android:padding="4dp"
-                    android:text="Forget Password?"
+                    android:text="Forgot Password?"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
-
-                <!--<LinearLayout-->
-                <!--android:id="@+id/signin_signup"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@+id/forgetPassword"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:layout_margin="5dp"-->
-                <!--android:orientation="horizontal">-->
-
-                <!--<Button-->
-                <!--android:id="@+id/registerButton"-->
-                <!--style="?android:textAppearanceSmall"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="SignUp"-->
-                <!--android:textColor="@color/colorPrimaryDark"-->
-                <!--android:textStyle="bold" />-->
 
                 <Button
                     android:id="@+id/email_sign_in_button"
@@ -144,8 +125,6 @@
                     android:text="login"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold" />
-                <!--</LinearLayout>-->
-
 
                 <LinearLayout
                     android:id="@+id/OtherloginScreen"
@@ -206,7 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="invisible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/dpChangeButton"
@@ -294,28 +273,12 @@
                         android:textIsSelectable="false" />
                 </android.support.design.widget.TextInputLayout>
 
-                <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal">-->
-
-
-                <!--<Button-->
-                <!--android:id="@+id/cancelRegistration"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="cancel"-->
-                <!--android:textColor="@color/colorPrimaryDark" />-->
-
                 <Button
                     android:id="@+id/submitRegistration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="create account"
                     android:textColor="@color/colorPrimaryDark" />
-
-                <!--</LinearLayout>-->
 
                 <TextView
                     android:id="@+id/cancelRegistration"

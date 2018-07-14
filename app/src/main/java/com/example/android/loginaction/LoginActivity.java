@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loginScreen.setVisibility(View.VISIBLE);
-                registerScreen.setVisibility(View.INVISIBLE);
+                registerScreen.setVisibility(View.GONE);
             }
         });
 
@@ -161,7 +161,6 @@ public class LoginActivity extends AppCompatActivity {
         dpChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Fire an intent to show an image picker
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/jpej");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
@@ -209,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void wrongCredentials(String doubtfulCredentials, String errorMessage) {
-                mProgressView.setVisibility(View.INVISIBLE);
+                mProgressView.setVisibility(View.GONE);
                 if (doubtfulCredentials.equals("email")) {
                     mEmailView.setError(errorMessage);
                     mEmailView.requestFocus();
@@ -237,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordReset.setOnPasswordChangeResult(new SimpleEmailLogin.OnPasswordChangeResult() {
             @Override
             public void resultSuccessful() {
-                mProgressView.setVisibility(View.INVISIBLE);
+                mProgressView.setVisibility(View.GONE);
                 Toast.makeText(LoginActivity.this, "Check your email for a reset link.", Toast.LENGTH_SHORT).show();
             }
 
@@ -258,7 +257,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void wrongEmail(String errorMessage) {
-                mProgressView.setVisibility(View.INVISIBLE);
+                mProgressView.setVisibility(View.GONE);
                 mEmailView.setError(errorMessage);
                 mEmailView.requestFocus();
                 Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
@@ -345,7 +344,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void intentMainActivity() {
-        mProgressView.setVisibility(View.INVISIBLE);
+        mProgressView.setVisibility(View.GONE);
         Log.i("point la271", "login successfully");
 
         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
@@ -356,7 +355,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void error(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-        mProgressView.setVisibility(View.INVISIBLE);
+        mProgressView.setVisibility(View.GONE);
     }
 
     private void attemptRegistration() {
@@ -386,7 +385,7 @@ public class LoginActivity extends AppCompatActivity {
             public void sameEmailError(Exception errorResult) {
                 error("account exists with same email Id");
                 registerScreen.setVisibility(View.VISIBLE);
-                loginScreen.setVisibility(View.INVISIBLE);
+                loginScreen.setVisibility(View.GONE);
             }
 
             @Override
@@ -398,7 +397,7 @@ public class LoginActivity extends AppCompatActivity {
             public void resultError(Exception errorResult) {
                 error("some error occurred");
                 registerScreen.setVisibility(View.VISIBLE);
-                loginScreen.setVisibility(View.INVISIBLE);
+                loginScreen.setVisibility(View.GONE);
             }
 
             @Override
@@ -416,7 +415,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void wrongCredentials(String doubtfulCredential, String errorMessage) {
-                mProgressView.setVisibility(View.INVISIBLE);
+                mProgressView.setVisibility(View.GONE);
                 switch (doubtfulCredential) {
                     case "email":
                         emailRegister.setError(errorMessage);

@@ -32,9 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    compile project(':loginlibrary')
-
-
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.makeramen:roundedimageview:2.3.0'
 
@@ -45,5 +42,6 @@ dependencies {
         exclude group: 'com.google.firebase'
     }
 
+    compile project(path: ':loginlibrary')
 }
 apply plugin: 'com.google.gms.google-services'
