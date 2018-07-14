@@ -3,9 +3,8 @@ package com.example.android.loginaction;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
-
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.example.android.loginlibrary.SimpleEmailLogin;
 import com.example.android.loginlibrary.SimpleFacebookLogin;
@@ -49,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
     private SimpleGoogleLogin googleLogin;
-    private TextView forgetPassword,registerText,cancelRegistration;
+    private TextView forgetPassword, registerText, cancelRegistration;
     private SimpleFacebookLogin facebookLogin;
 
     @Override
@@ -345,7 +343,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void intentMainActivity() {
         mProgressView.setVisibility(View.GONE);
-        Log.i("point la271", "login successfully");
+        Log.i("point la348", "login successfully");
 
         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
         intent.putExtra("result", 1);
@@ -401,6 +399,13 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
+            public void profileUpdateError(Exception errorResult) {
+                error("some error occurred while updating profile");
+                registerScreen.setVisibility(View.GONE);
+                loginScreen.setVisibility(View.VISIBLE);
+            }
+
+            @Override
             public void resultName(FirebaseUser registeredUser) {
 
                 Toast.makeText(getApplicationContext(), "data updated", Toast.LENGTH_SHORT).show();
@@ -446,7 +451,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("point la423", (resultCode == RESULT_OK) + "");
+        Log.i("point la456", (resultCode == RESULT_OK) + "");
         if (requestCode == RC_SIGN_IN_GOOGLE) {
             googleLogin.onActivityResult(requestCode, resultCode, data);
 
@@ -466,7 +471,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
-                            Log.i("profile uploaded", "point 473");
+                            Log.i("profile uploaded", "point 476");
 
                             submitRegistration.setActivated(true);
                         }

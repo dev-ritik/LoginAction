@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 
 public class SimpleEmailLogin {
-    public static FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
 
     public SimpleEmailLogin() {
 
@@ -28,29 +28,29 @@ public class SimpleEmailLogin {
     private OnPasswordChangeResult mOnPasswordChangeResult;
 
     public interface OnEmailLoginResult {
-        public void resultSuccessful(FirebaseUser registeredUser);
+        void resultSuccessful(FirebaseUser registeredUser);
 
-        public void noAccountFound(Exception errorResult);
+        void noAccountFound(Exception errorResult);
 
-        public void invalidCredentials(Exception errorResult);
+        void invalidCredentials(Exception errorResult);
 
-        public void resultError(Exception errorResult);
+        void resultError(Exception errorResult);
 
-        public void networkError(Exception errorResult);
+        void networkError(Exception errorResult);
 
-        public void wrongCredentials(String doubtfulCredentials, String errorMessage);
+        void wrongCredentials(String doubtfulCredentials, String errorMessage);
     }
 
     public interface OnPasswordChangeResult {
-        public void resultSuccessful();
+        void resultSuccessful();
 
-        public void noAccountFound(Exception errorResult);
+        void noAccountFound(Exception errorResult);
 
-        public void resultError(Exception errorResult);
+        void resultError(Exception errorResult);
 
-        public void networkError(Exception errorResult);
+        void networkError(Exception errorResult);
 
-        public void wrongEmail(String errorMessage);
+        void wrongEmail(String errorMessage);
     }
 
     public void setOnEmailLoginResult(OnEmailLoginResult eventListener) {
@@ -92,8 +92,8 @@ public class SimpleEmailLogin {
                                     if (mOnEmailLoginResult != null) {
                                         mOnEmailLoginResult.invalidCredentials(task.getException());
                                     }
-                                } catch (Exception ee) {
-                                    Log.i("point 90", ee.toString());
+                                } catch (Exception e) {
+                                    Log.i("90", e.toString());
                                     if (mOnEmailLoginResult != null) {
                                         mOnEmailLoginResult.resultError(task.getException());
                                     }
@@ -183,11 +183,12 @@ public class SimpleEmailLogin {
                                     if (mOnPasswordChangeResult != null) {
                                         mOnPasswordChangeResult.networkError(task.getException());
                                     }
-                                }catch (com.google.firebase.FirebaseException e) {
+                                } catch (com.google.firebase.FirebaseException e) {
                                     if (mOnPasswordChangeResult != null) {
                                         mOnPasswordChangeResult.noAccountFound(task.getException());
                                     }
                                 } catch (Exception e) {
+                                    Log.i("191", e.toString());
                                     if (mOnPasswordChangeResult != null) {
                                         mOnPasswordChangeResult.resultError(task.getException());
                                     }

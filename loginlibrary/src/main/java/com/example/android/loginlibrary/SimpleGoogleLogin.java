@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,7 +23,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class SimpleGoogleLogin {
     private static FirebaseAuth mAuth;
-    private GoogleSignInClient mGoogleSignInClient;
     private int resultCodeSignIn;
     private Activity activity;
     private String googleToken;
@@ -38,15 +36,15 @@ public class SimpleGoogleLogin {
     private OnGoogleLoginResult mOnGoogleLoginResult;
 
     public interface OnGoogleLoginResult {
-        public void resultSuccessful(FirebaseUser registeredUser);
+        void resultSuccessful(FirebaseUser registeredUser);
 
-        public void signinCancelledByUser(Exception errorResult);
+        void signinCancelledByUser(Exception errorResult);
 
-        public void accountCollisionError(Exception errorResult);
+        void accountCollisionError(Exception errorResult);
 
-        public void networkError(Exception errorResult);
+        void networkError(Exception errorResult);
 
-        public void resultError(Exception errorResult);
+        void resultError(Exception errorResult);
     }
 
     public void setOnGoogleLoginResult(OnGoogleLoginResult eventListener) {
@@ -59,8 +57,7 @@ public class SimpleGoogleLogin {
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Intent signInIntent = GoogleSignIn.getClient(activity, gso).getSignInIntent();
         activity.startActivityForResult(signInIntent, resultCodeSignIn);
     }
 
@@ -69,9 +66,9 @@ public class SimpleGoogleLogin {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == resultCodeSignIn) {
 
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
             try {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
@@ -116,7 +113,7 @@ public class SimpleGoogleLogin {
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("119",  task.getException().toString());
+                            Log.i("119", task.getException().toString());
                             try {
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
@@ -129,6 +126,7 @@ public class SimpleGoogleLogin {
                                     mOnGoogleLoginResult.networkError(task.getException());
                                 }
                             } catch (Exception e) {
+                                Log.i("132", e.toString());
                                 if (mOnGoogleLoginResult != null) {
                                     mOnGoogleLoginResult.resultError(task.getException());
                                 }

@@ -25,7 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
  */
 
 public class SimpleFacebookLogin {
-    private static FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
     private Activity activity;
     private CallbackManager mCallbackManager;
 
@@ -36,17 +36,17 @@ public class SimpleFacebookLogin {
     private SimpleFacebookLogin.OnFacebookLoginResult mOnFacebookLoginResult;
 
     public interface OnFacebookLoginResult {
-        public void resultFacebookLoggedIn(LoginResult loginResult);
+        void resultFacebookLoggedIn(LoginResult loginResult);
 
-        public void resultActualLoggedIn(FirebaseUser registeredUser);
+        void resultActualLoggedIn(FirebaseUser registeredUser);
 
-        public void resultCancel();
+        void resultCancel();
 
-        public void accountCollisionError(Exception errorResult);
+        void accountCollisionError(Exception errorResult);
 
-        public void networkError(Exception errorResult);
+        void networkError(Exception errorResult);
 
-        public void resultError(Exception errorResult);
+        void resultError(Exception errorResult);
     }
 
     public void setOnFacebookLoginResult(SimpleFacebookLogin.OnFacebookLoginResult eventListener) {
@@ -112,7 +112,8 @@ public class SimpleFacebookLogin {
                                 if (mOnFacebookLoginResult != null) {
                                     mOnFacebookLoginResult.networkError(task.getException());
                                 }
-                            } catch (Exception ee) {
+                            } catch (Exception e) {
+                                Log.i("116", e.toString());
                                 if (mOnFacebookLoginResult != null) {
                                     mOnFacebookLoginResult.resultError(task.getException());
                                 }

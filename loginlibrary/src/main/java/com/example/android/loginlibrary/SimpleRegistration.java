@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
 
 public class SimpleRegistration {
 
-    private static FirebaseUser user;
-    private static FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private FirebaseAuth mAuth;
 
     public SimpleRegistration() {
     }
@@ -30,19 +30,21 @@ public class SimpleRegistration {
     private OnRegistrationResult mOnRegistrationResult;
 
     public interface OnRegistrationResult {
-        public void resultSuccessful(FirebaseUser registeredUser);
+        void resultSuccessful(FirebaseUser registeredUser);
 
-        public void sameEmailError(Exception errorResult);
+        void sameEmailError(Exception errorResult);
 
-        public void networkError(Exception errorResult);
+        void networkError(Exception errorResult);
 
-        public void resultError(Exception errorResult);
+        void resultError(Exception errorResult);
 
-        public void resultName(FirebaseUser registeredUser);
+        void profileUpdateError(Exception errorResult);
 
-        public void resultDp(Uri uploadUriLink);
+        void resultName(FirebaseUser registeredUser);
 
-        public void wrongCredentials(String doubtfulCredential, String errorMessage);
+        void resultDp(Uri uploadUriLink);
+
+        void wrongCredentials(String doubtfulCredential, String errorMessage);
     }
 
     public void setOnRegistrationResult(OnRegistrationResult eventListener) {
@@ -81,7 +83,7 @@ public class SimpleRegistration {
                                                 } else {
                                                     Log.i("82", task.getException().toString());
                                                     if (mOnRegistrationResult != null) {
-                                                        mOnRegistrationResult.resultError(task.getException());
+                                                        mOnRegistrationResult.profileUpdateError(task.getException());
                                                     }
                                                 }
                                             }
@@ -99,7 +101,8 @@ public class SimpleRegistration {
                                     if (mOnRegistrationResult != null) {
                                         mOnRegistrationResult.networkError(task.getException());
                                     }
-                                } catch (Exception ee) {
+                                } catch (Exception e) {
+                                    Log.i("105", e.toString());
                                     if (mOnRegistrationResult != null) {
                                         mOnRegistrationResult.resultError(task.getException());
                                     }

@@ -3,10 +3,10 @@ package com.example.android.loginaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,8 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.squareup.picasso.Picasso;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,11 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (user != null) {
                     //user is signed
-                    Log.i("point m58", "user != null");
+                    Log.i("point m57", "user != null");
                     onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
                 } else {
                     //user signed out
-                    Log.i("point m62", "user = null");
+                    Log.i("point m61", "user = null");
 
                     onSignOutCleaner();
                     startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Profile");
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        user=mFirebaseAuth.getCurrentUser();
-        if (user!=null) {
+        user = mFirebaseAuth.getCurrentUser();
+        if (user != null) {
             onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
         }
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         emailId.setText(mEmailId);
         try {
             if (mUserProfile != null) {
-                Log.i(mUserProfile.toString(), "point m87");
+                Log.i(mUserProfile.toString(), "point m99");
                 com.squareup.picasso.Transformation transformation = new RoundedTransformationBuilder()
                         .cornerRadiusDp(30)
                         .oval(false)
