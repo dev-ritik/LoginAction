@@ -21,6 +21,9 @@ In short it is a library to help making login activity with [Firebase](https://f
  
  login methods for faster login activity building for android applications on java.
 
+ _**You can always use [actual_code](https://github.com/dev-ritik/LoginAction/tree/actual_code) branch
+  to checkout the original code without using this library!.**_
+  
 ## Setup
 
 1. For Email and Google login:
@@ -100,7 +103,12 @@ to
             public void resultError(Exception errorResult) {
                 //some error occurred
             }
-
+            
+            @Override
+            public void profileUpdateError(Exception errorResult) {
+                //some error occurred while updating username and/or profile pic
+            }
+            
             @Override
             public void resultName(FirebaseUser registeredUser) {
                 //name updated(user already registered)

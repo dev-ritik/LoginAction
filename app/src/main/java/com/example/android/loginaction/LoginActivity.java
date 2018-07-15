@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,7 +26,9 @@ import com.example.android.loginlibrary.SimpleRegistration;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -207,14 +210,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void wrongCredentials(String doubtfulCredentials, String errorMessage) {
                 mProgressView.setVisibility(View.GONE);
-                if (doubtfulCredentials.equals("email")) {
-                    mEmailView.setError(errorMessage);
-                    mEmailView.requestFocus();
-                } else if (doubtfulCredentials.equals("password")) {
-                    mPasswordView.setError(errorMessage);
-                    mPasswordView.requestFocus();
-                } else
-                    Toast.makeText(getApplicationContext(), "credential error", Toast.LENGTH_SHORT).show();
+                switch (doubtfulCredentials){
+                    case "email" :
+                        mEmailView.setError(errorMessage);
+                        mEmailView.requestFocus();
+                        break;
+                    case "password":
+                        mPasswordView.setError(errorMessage);
+                        mPasswordView.requestFocus();
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(), "credential error", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
         });
@@ -407,7 +415,6 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void resultName(FirebaseUser registeredUser) {
-
                 Toast.makeText(getApplicationContext(), "data updated", Toast.LENGTH_SHORT).show();
                 intentMainActivity();
             }
@@ -463,18 +470,28 @@ public class LoginActivity extends AppCompatActivity {
                 dpChangeButton.setImageURI(selectedImageUri);
                 if (selectedImageUri != null) {
                     submitRegistration.setActivated(false);
-                    StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
-//                              take last part of uri location link and make child of mChatPhotosStorageReference
-                    photoREf.putFile(selectedImageUri).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        //                    upload file to firebase on success of upload
+//                    Log.i("point 470",selectedImageUri.toString() );
+
+                    final StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
+//                       take last part of uri location link and make child of mChatPhotosStorageReference
+                    photoREf.putFile(selectedImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
-                            Log.i("profile uploaded", "point 476");
-
-                            submitRegistration.setActivated(true);
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (!task.isSuccessful()) {
+                                error("failed while uploading picture");
+                            }
+                            return photoREf.getDownloadUrl();
                         }
-
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        //   upload file to firebase on success of upload
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                downloadUrl = task.getResult();
+                            } else {
+                                error("failed while uploading picture");
+                            }
+                        }
                     });
 
                 }
