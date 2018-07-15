@@ -265,6 +265,7 @@
                         android:layout_height="wrap_content"
                         android:hint="Re-enter Password"
                         android:imeOptions="actionUnspecified"
+                        android:imeActionLabel="sign up"
                         android:inputType="textPassword"
                         android:maxLines="1"
                         android:singleLine="true"

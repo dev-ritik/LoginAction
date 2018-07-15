@@ -451,7 +451,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("point la456", (resultCode == RESULT_OK) + "");
         if (requestCode == RC_SIGN_IN_GOOGLE) {
             googleLogin.onActivityResult(requestCode, resultCode, data);
 
@@ -459,7 +458,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!(facebookLogin == null))
                 facebookLogin.onActivityResult(requestCode, resultCode, data);
 
-            else if (requestCode == RC_PHOTO_PICKER) {
+            if (requestCode == RC_PHOTO_PICKER) {
                 selectedImageUri = data.getData();
                 dpChangeButton.setImageURI(selectedImageUri);
                 if (selectedImageUri != null) {

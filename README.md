@@ -238,7 +238,7 @@ to
         //googleLogin is the instance of same SimpleGoogleLogin
 ```
 * Facebook login (**call it in oncreate method**)
-- It has an **important limitation** discussed [here](https://github.com/dev-ritik/LoginAction/issues/2)
+    - It has an **important limitation** discussed [here](https://github.com/dev-ritik/LoginAction/issues/2)
 
 ```java
         facebookLogin = new SimpleFacebookLogin(this);
@@ -289,7 +289,7 @@ to
         } 
         //facebookLogin is the instance of same SimpleFacebookLogin
 ```
-* Signout
+* **Signout**
 ````java
 AuthUI.getInstance().signOut(this);
 ````

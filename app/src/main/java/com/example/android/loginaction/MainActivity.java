@@ -27,16 +27,17 @@ public class MainActivity extends AppCompatActivity {
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
 
-    private static String mUser;
-    private static Uri mUserProfile;
+    private static String mUserName;
+    private static Uri mUserDp;
     private String mEmailId;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseStorage mFirebaseStorage;
     public static StorageReference mProfilePicStorageReference;
-    private FirebaseUser user;
     private LinearLayout mainLayout;
+    TextView userName;
+    ImageView profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,18 +77,22 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Profile");
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        user = mFirebaseAuth.getCurrentUser();
-        if (user != null) {
-            onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
-        }
 
-        TextView userName = findViewById(R.id.userName);
+        userName = findViewById(R.id.userName);
         mainLayout = (LinearLayout) findViewById(R.id.main_content);
 
-        ImageView profilePic = findViewById(R.id.profile_image);
+        profilePic = findViewById(R.id.profile_image);
 
-        if (mUser != null) {
-            userName.setText(mUser);
+
+    }
+
+    private void onSignInitilize(String userid, String email, Uri profilePicNew, String userNameNew) {
+        mEmailId = email;
+        mUserDp = profilePicNew;
+        mUserName = userNameNew;
+
+        if (mUserName != null) {
+            userName.setText(mUserName);
         } else {
             userName.setVisibility(View.GONE);
         }
@@ -95,14 +100,14 @@ public class MainActivity extends AppCompatActivity {
         TextView emailId = findViewById(R.id.email);
         emailId.setText(mEmailId);
         try {
-            if (mUserProfile != null) {
-                Log.i(mUserProfile.toString(), "point m99");
+            if (mUserDp != null) {
+                Log.i(mUserDp.toString(), "point m99");
                 com.squareup.picasso.Transformation transformation = new RoundedTransformationBuilder()
                         .cornerRadiusDp(30)
                         .oval(false)
                         .build();
-                Picasso.with(this)
-                        .load(mUserProfile)
+                Picasso.get()
+                        .load(mUserDp)
                         .transform(transformation)
                         .fit()
                         .centerCrop()
@@ -119,17 +124,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void onSignInitilize(String userid, String email, Uri profilePic, String userName) {
-        mEmailId = email;
-        mUserProfile = profilePic;
-        mUser = userName;
-
-    }
-
     private void onSignOutCleaner() {
         mEmailId = "";
-        mUser = ANONYMOUS;
-        mUserProfile = null;
+        mUserName = ANONYMOUS;
+        mUserDp = null;
 
     }
 
@@ -156,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logout(View v) {
-        mUserProfile = null;
+        mUserDp = null;
         mEmailId = "";
         AuthUI.getInstance().signOut(this);//from login providers and smart lock//redirects to onpause and on resume
 
