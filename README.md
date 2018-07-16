@@ -33,7 +33,7 @@ In short it is a library to help making login activity with [Firebase](https://f
     * proceed with the following dependency:
     
 2. Dependency:
-    * Add the following dependency to your app's build.gradle file:
+  * Add the following dependency to your project's build.gradle file:
 
 
 ```groovy
@@ -44,10 +44,13 @@ allprojects {
 }
 
 ```
+
+  * and this dependency in your app's build.gradle file:
+    
 ```groovy
 dependencies {
-	        implementation 'com.github.ritik1991998:LoginAction:cc4bd1759e'
-	}
+    implementation 'com.github.dev-ritik:LoginAction:84b663fe6f'
+}
 ```
 
 3. Proceed calling login classes as [here](https://github.com/ritik1991998/LoginAction/blob/master/app/src/main/java/com/example/android/loginaction/LoginActivity.java)
