@@ -75,6 +75,7 @@ to
 * Your String.xml file has:
     * facebook_app_id
     * fb_login_protocol_scheme  
+* _If any dependency added in the library is creating error, you can always add the latest in your app's build.gradle._
     
 ## Usage
 

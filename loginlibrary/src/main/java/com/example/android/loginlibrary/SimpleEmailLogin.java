@@ -106,13 +106,7 @@ public class SimpleEmailLogin {
     }
 
     private boolean checkCredentials(String email, String passwordinput) {
-        if (!isEmailValid(email))
-            return false;
-
-        if (!passwordCheck(passwordinput)) {
-            return false;
-        }
-        return true;
+        return isEmailValid(email) && passwordCheck(passwordinput);
     }
 
     private boolean passwordCheck(String password) {
@@ -131,7 +125,7 @@ public class SimpleEmailLogin {
         return true;
     }
 
-    public boolean isEmailValid(String email) {
+    boolean isEmailValid(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
                 "[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +

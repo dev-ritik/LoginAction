@@ -488,6 +488,8 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()) {
                                 downloadUrl = task.getResult();
+                                submitRegistration.setActivated(true);
+
                             } else {
                                 error("failed while uploading picture");
                             }

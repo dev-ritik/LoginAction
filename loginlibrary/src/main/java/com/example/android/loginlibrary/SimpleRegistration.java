@@ -133,7 +133,7 @@ public class SimpleRegistration {
         return true;
     }
 
-    public boolean isEmailValid(String email) {
+    boolean isEmailValid(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
                 "[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
