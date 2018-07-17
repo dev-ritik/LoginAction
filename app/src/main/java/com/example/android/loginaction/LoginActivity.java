@@ -63,12 +63,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmailView;
     private EditText mPasswordView, emailRegister, userName, password1, password2;
     private View mProgressView;
-    private View mLoginFormView;
     private Button mEmailSignInButton, submitRegistration;
     private LoginButton mloginButton;
     private CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
-    private SignInButton signInGoogleButton;
     private TextView forgetPassword, registerButton, cancelRegistration;
     RelativeLayout loginScreen;
     LinearLayout registerScreen;
@@ -169,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
+        View mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
         emailRegister = (EditText) findViewById(R.id.emailRegister);
@@ -229,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        signInGoogleButton = findViewById(R.id.signInGoogle);
+        SignInButton signInGoogleButton= findViewById(R.id.signInGoogle);
         signInGoogleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

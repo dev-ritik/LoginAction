@@ -20,7 +20,6 @@ android {
 
 repositories {
     mavenLocal()
-    maven { url "https://jitpack.io" }
     flatDir {
         dirs 'libs'
     }
@@ -34,13 +33,11 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     compile 'com.makeramen:roundedimageview:2.3.0'
 
-    implementation 'com.facebook.android:facebook-android-sdk:4.33.0'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.firebase:firebase-auth:16.0.2'
-    compile 'com.google.android.gms:play-services-auth:15.0.1'
+//    compile 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.facebook.android:facebook-login:4.33.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
-
 
 }
 apply plugin: 'com.google.gms.google-services'
