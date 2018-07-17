@@ -2,13 +2,11 @@ package com.example.android.loginaction;
 
 
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -33,12 +30,11 @@ import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -73,7 +69,6 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
     private SignInButton signInGoogleButton;
-    private GoogleSignInClient mGoogleSignInClient;
     private TextView forgetPassword, registerButton, cancelRegistration;
     RelativeLayout loginScreen;
     LinearLayout registerScreen;
@@ -122,7 +117,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Log.i("login started", "point 69");
                 attemptLogin();
             }
         });
@@ -130,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginScreen.setVisibility(View.INVISIBLE);
+                loginScreen.setVisibility(View.GONE);
                 registerScreen.setVisibility(View.VISIBLE);
                 emailRegister.setText(mEmailView.getText());
             }
@@ -141,14 +135,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mProgressView.setVisibility(View.VISIBLE);
                 if (!emailCheck(mEmailView)) {
-                    mProgressView.setVisibility(View.INVISIBLE);
+                    mProgressView.setVisibility(View.GONE);
                 } else {
                     mAuth.sendPasswordResetEmail(mEmailView.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        mProgressView.setVisibility(View.INVISIBLE);
+                                        mProgressView.setVisibility(View.GONE);
                                         Toast.makeText(LoginActivity.this, "Check your email for a reset link.", Toast.LENGTH_SHORT).show();
                                     } else {
                                         Log.i("168", task.getException().toString());
@@ -199,7 +193,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loginScreen.setVisibility(View.VISIBLE);
-                registerScreen.setVisibility(View.INVISIBLE);
+                registerScreen.setVisibility(View.GONE);
             }
         });
 
@@ -212,26 +206,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                if (firebaseAuth.getCurrentUser() != null) {
-//                    //pass intent ....
-//                    Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
-//
-//                    intent.putExtra("result", 1);
-//                    setResult(Activity.RESULT_OK, intent);
-////                   startActivity(intent);
-//                    Toast.makeText(LoginActivity.this, "logged in", Toast.LENGTH_SHORT).show();
-//                    finish();
-//                } else {
-//                    Log.i("auth state null", "point 173");
-//                    Toast.makeText(LoginActivity.this, "unregistered yet", Toast.LENGTH_SHORT).show();
-//
-//                }
-//            }
-//        };
-        // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
 
         mloginButton = findViewById(R.id.login_button);
@@ -242,7 +216,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i("got that", "facebook:onSuccess:" + loginResult);
                 mProgressView.setVisibility(View.VISIBLE);
                 handleFacebookAccessToken(loginResult.getAccessToken());
-
             }
 
             @Override
@@ -261,14 +234,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mProgressView.setVisibility(View.VISIBLE);
-                signIn();
+                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+
+                Intent signInIntent = GoogleSignIn.getClient(LoginActivity.this, gso).getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
 
         dpChangeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Fire an intent to show an image picker
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/jpej");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
@@ -276,12 +254,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
 
@@ -298,12 +270,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check for a valid password, if the user entered one.
 
-//        passwordCheck(mPasswordView);
-//        emailCheck(mEmailView);
-
         if (passwordCheck(mPasswordView) && (emailCheck(mEmailView))) {
-
-            Log.i("login attempted", "point 171");
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -311,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                Log.i("signInWithEmail:success", "point 187");
+                                Log.i("signInWithEmail:success", "point 311");
                                 loggedIn();
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -326,8 +293,8 @@ public class LoginActivity extends AppCompatActivity {
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidCredentialsException e) {
                                     error("wrong password or this is a google or facebook loggedin account");
 
-                                } catch (Exception ee) {
-                                    Log.i("point 90", ee.toString());
+                                } catch (Exception e) {
+                                    Log.i("point 327", e.toString());
                                     error("some error occurred");
 
                                 }
@@ -338,11 +305,6 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             error("wrong credentials");
         }
-    }
-
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     private void attemptRegistration() {
@@ -358,16 +320,9 @@ public class LoginActivity extends AppCompatActivity {
         String password1String = password1.getText().toString();
         String password2String = password2.getText().toString();
 
-        if (!emailCheck(emailRegister))
+        if (!emailCheck(emailRegister) || !passwordCheck(password1) || !passwordCheck(password2))
             return;
-
         View focusView;
-        if (!passwordCheck(password1))
-            return;
-
-        if (!passwordCheck(password2))
-            return;
-
 
         if (!password1String.equals(password2String)) {
             Toast.makeText(LoginActivity.this, "Passwords doesn't match", Toast.LENGTH_SHORT).show();
@@ -376,7 +331,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        Log.i("registration attempted", "point 298");
         mProgressView.setVisibility(View.VISIBLE);
 
         mAuth.createUserWithEmailAndPassword(email, password1String)
@@ -385,50 +339,50 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 //                            loginScreen.setVisibility(View.VISIBLE);
-//                            registerScreen.setVisibility(View.INVISIBLE);
+//                            registerScreen.setVisibility(View.GONE);
                             // Sign in success, update UI with the signed-in user's information
                             user = mAuth.getCurrentUser();
                             if (selectedImageUri != null) {
                                 if (downloadUrl != null) {
-                                    Log.i(downloadUrl.toString(), "point 313");
+                                    Log.i(downloadUrl.toString(), "point 389");
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(userNameString)
                                             .setPhotoUri(downloadUrl)
                                             .build();
-                                    Log.i(selectedImageUri.toString(), "point 319");
+                                    Log.i(selectedImageUri.toString(), "point 394");
                                     user.updateProfile(profileUpdates)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Log.i("point 325", "User profile successfully updated.");
+                                                        Log.i("point 400", "User profile successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
                                                         loggedIn();
                                                     } else {
                                                         Log.i("82", task.getException().toString());
-                                                        error("profile upload failed");
+                                                        error("profile update failed");
                                                     }
                                                 }
                                             });
                                 } else {
-                                    Log.i("point 349", "User profile pic upload failed.");
+                                    Log.i("point 411", "User profile pic upload failed.");
 
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(userNameString)
                                             .build();
-                                    Log.i(selectedImageUri.toString(), "point 354");
+                                    Log.i(selectedImageUri.toString(), "point 416");
                                     user.updateProfile(profileUpdates)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Log.i("point 342", "User name successfully updated.");
+                                                        Log.i("point 422", "User name successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
                                                         loggedIn();
                                                     } else {
-                                                        Log.i("82", task.getException().toString());
+                                                        Log.i("point 427", task.getException().toString());
                                                         error("profile upload failed");
                                                     }
                                                 }
@@ -443,7 +397,7 @@ public class LoginActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Log.i("point 358", "User profile successfully updated.");
+                                                    Log.i("point 442", "User profile successfully updated.");
                                                     selectedImageUri = null;
                                                     downloadUrl = null;
                                                     loggedIn();
@@ -454,10 +408,9 @@ public class LoginActivity extends AppCompatActivity {
                                             }
                                         });
                             }
-                            Log.i(user.getDisplayName(), "point 365");
                         } else {
                             registerScreen.setVisibility(View.VISIBLE);
-                            loginScreen.setVisibility(View.INVISIBLE);
+                            loginScreen.setVisibility(View.GONE);
                             // If sign in fails, display a message to the user.
                             Log.i("91", task.getException().toString());
                             try {
@@ -466,7 +419,7 @@ public class LoginActivity extends AppCompatActivity {
                                 error("account exists with same email Id");
                             } catch (com.google.firebase.FirebaseNetworkException e) {
                                 error("network error occurred");
-                            } catch (Exception ee) {
+                            } catch (Exception e) {
                                 error("some error occurred");
 
                             }
@@ -521,8 +474,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
@@ -536,7 +489,7 @@ public class LoginActivity extends AppCompatActivity {
                     error("network error occurred");
 
                 } else if (e.getStatusCode() == 12501) {
-                    mProgressView.setVisibility(View.INVISIBLE);
+                    mProgressView.setVisibility(View.GONE);
                 } else {
                     error("some error occurred");
 
@@ -544,30 +497,37 @@ public class LoginActivity extends AppCompatActivity {
             }
         } else if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             selectedImageUri = data.getData();
-            Log.i(selectedImageUri.toString(), "point 462");
             dpChangeButton.setImageURI(selectedImageUri);
             if (selectedImageUri != null) {
                 submitRegistration.setActivated(false);
-                StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
-//                              take last part of uri location link and make child of mChatPhotosStorageReference
-                photoREf.putFile(selectedImageUri).addOnSuccessListener(LoginActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    //                    upload file to firebase onsucess of upload
+                final StorageReference photoREf = MainActivity.mProfilePicStorageReference.child(selectedImageUri.getLastPathSegment());
+//                       take last part of uri location link and make child of mChatPhotosStorageReference
+                photoREf.putFile(selectedImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        downloadUrl = taskSnapshot.getDownloadUrl();//url of uploaded image
-                        Log.i("success at profile up", "point 473");
-
-                        submitRegistration.setActivated(true);
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            error("failed while uploading picture");
+                        }
+                        return photoREf.getDownloadUrl();
                     }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    //   upload file to firebase on success of upload
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            downloadUrl = task.getResult();
+                            submitRegistration.setActivated(true);
 
+                        } else {
+                            error("failed while uploading picture");
+                        }
+                    }
                 });
-
             }
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        Log.i("point 566", "firebaseAuthWithGoogle:" + account.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -614,7 +574,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.d("", "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
@@ -635,7 +594,7 @@ public class LoginActivity extends AppCompatActivity {
                             } catch (com.google.firebase.FirebaseNetworkException e) {
                                 error("network error occurred");
 
-                            } catch (Exception ee) {
+                            } catch (Exception e) {
                                 error("some error occurred");
 
                             }
@@ -653,8 +612,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void intentMainActivity() {
-        mProgressView.setVisibility(View.INVISIBLE);
-        Log.i("point la271", "login successfully");
+        mProgressView.setVisibility(View.GONE);
+        Log.i("point 665", "login successfully");
 
         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
         intent.putExtra("result", 1);
@@ -665,18 +624,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void error(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-        mProgressView.setVisibility(View.INVISIBLE);
+        mProgressView.setVisibility(View.GONE);
     }
 
     @Override
     public void onBackPressed() {
-        Log.i("point 562", "back pressed");
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(startMain);
-        return;
-
     }
 }
 

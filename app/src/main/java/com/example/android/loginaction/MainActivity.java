@@ -3,10 +3,10 @@ package com.example.android.loginaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,8 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.squareup.picasso.Picasso;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,16 +27,17 @@ public class MainActivity extends AppCompatActivity {
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
 
-    private static String mUser;
-    private static Uri mUserProfile;
+    private static String mUserName;
+    private static Uri mUserDp;
     private String mEmailId;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseStorage mFirebaseStorage;
     public static StorageReference mProfilePicStorageReference;
-    private FirebaseUser user;
     private LinearLayout mainLayout;
+    TextView userName;
+    ImageView profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseStorage = FirebaseStorage.getInstance();
         mProfilePicStorageReference = mFirebaseStorage.getReference("profile_pic");
 
-        Log.i("point m49","oncreate");
+        Log.i("point 49", "oncreate");
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -56,11 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if (user != null) {
                     //user is signed
-                    Log.i("point m58","reached");
                     onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
                 } else {
                     //user signed out
-                    Log.i("point m62","reached");
 
                     onSignOutCleaner();
                     startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
@@ -77,23 +76,24 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Profile");
 
-
         mFirebaseAuth = FirebaseAuth.getInstance();
-        user=mFirebaseAuth.getCurrentUser();
-        if (user!=null) {
-            onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
-        }
-        TextView userName = findViewById(R.id.userName);
+
+        userName = findViewById(R.id.userName);
         mainLayout = (LinearLayout) findViewById(R.id.main_content);
 
-        ImageView profilePic = findViewById(R.id.profile_image);
+        profilePic = findViewById(R.id.profile_image);
 
 
+    }
 
-        if (mUser != null) {
-            Log.i("point m84","null");
+    private void onSignInitilize(String userid, String email, Uri profilePicNew, String userNameNew) {
+        mEmailId = email;
+        mUserDp = profilePicNew;
+        mUserName = userNameNew;
 
-            userName.setText(mUser);
+        if (mUserName != null) {
+
+            userName.setText(mUserName);
         } else {
             userName.setVisibility(View.GONE);
         }
@@ -101,14 +101,13 @@ public class MainActivity extends AppCompatActivity {
         TextView emailId = findViewById(R.id.email);
         emailId.setText(mEmailId);
         try {
-            if (mUserProfile != null) {
-                Log.i(mUserProfile.toString(), "point m87");
+            if (mUserDp != null) {
                 com.squareup.picasso.Transformation transformation = new RoundedTransformationBuilder()
                         .cornerRadiusDp(30)
                         .oval(false)
                         .build();
-                Picasso.with(this)
-                        .load(mUserProfile)
+                Picasso.get()
+                        .load(mUserDp)
                         .transform(transformation)
                         .fit()
                         .centerCrop()
@@ -117,31 +116,18 @@ public class MainActivity extends AppCompatActivity {
                         .into(profilePic);
 
             } else {
-                Log.i("profile pic=null", "point 83");
 
                 profilePic.setImageResource(R.drawable.icon_profile_empty);
             }
         } catch (Exception e) {
             profilePic.setImageResource(R.drawable.icon_profile_empty);
         }
-
-    }
-
-    private void onSignInitilize(String userid, String email, Uri profilePic, String userName) {
-        mEmailId = email;
-        mUserProfile = profilePic;
-        mUser = userName;
-        Log.i("point m120",userid);
-        Log.i("point m121",email);
-//        Log.i("point m122",profilePic.toString());
-        Log.i("point m123",userName);
-
     }
 
     private void onSignOutCleaner() {
         mEmailId = "";
-        mUser=ANONYMOUS;
-        mUserProfile = null;
+        mUserName = ANONYMOUS;
+        mUserDp = null;
 
     }
 
@@ -168,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logout(View v) {
-        mUserProfile = null;
+        mUserDp = null;
         mEmailId = "";
         AuthUI.getInstance().signOut(this);//from login providers and smart lock//redirects to onpause and on resume
 
@@ -179,13 +165,13 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         if (mAuthStateListener != null)
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        Log.i("onpause", "point m138");
+        Log.i("onpause", "point 177");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("resume", "point m144");
+        Log.i("resume", "point 183");
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
 
     }
