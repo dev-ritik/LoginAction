@@ -26,29 +26,24 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
-
+    public static StorageReference mProfilePicStorageReference;
     private static String mUserName;
     private static Uri mUserDp;
-    private String mEmailId;
-
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private FirebaseStorage mFirebaseStorage;
-    public static StorageReference mProfilePicStorageReference;
-    private LinearLayout mainLayout;
     TextView userName;
     ImageView profilePic;
+    private String mEmailId;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private LinearLayout mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFirebaseStorage = FirebaseStorage.getInstance();
-        mProfilePicStorageReference = mFirebaseStorage.getReference("profile_pic");
+        mProfilePicStorageReference = FirebaseStorage.getInstance().getReference("profile_pic");
 
         Log.i("point 49", "oncreate");
-
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -64,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     onSignOutCleaner();
                     startActivityForResult((new Intent(getApplicationContext(), com.example.android.loginaction.LoginActivity.class)),
                             RC_SIGN_IN);
+                    Log.i("point 63", "snack log out");
                     Snackbar snackbar = Snackbar.make(mainLayout, "Logged out successfully", Snackbar.LENGTH_SHORT);
                     View sbView = snackbar.getView();
                     TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
@@ -79,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         userName = findViewById(R.id.userName);
-        mainLayout = (LinearLayout) findViewById(R.id.main_content);
+        mainLayout = findViewById(R.id.main_content);
 
         profilePic = findViewById(R.id.profile_image);
 
@@ -102,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         emailId.setText(mEmailId);
         try {
             if (mUserDp != null) {
+                Log.i("point 105", "dp not null " + mUserDp);
                 com.squareup.picasso.Transformation transformation = new RoundedTransformationBuilder()
                         .cornerRadiusDp(30)
                         .oval(false)
@@ -116,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         .into(profilePic);
 
             } else {
+                Log.i("point 120", "dp null");
 
                 profilePic.setImageResource(R.drawable.icon_profile_empty);
             }
@@ -163,15 +161,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAuthStateListener != null)
+        if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        Log.i("onpause", "point 177");
+        }
+        Log.i("point 167","onpause" );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("resume", "point 183");
+        Log.i("point 173","resume" );
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
 
     }

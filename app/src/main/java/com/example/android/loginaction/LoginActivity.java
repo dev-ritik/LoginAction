@@ -31,7 +31,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,17 +58,15 @@ public class LoginActivity extends AppCompatActivity {
      */
     private final static int RC_SIGN_IN = 1;
     private static final int RC_PHOTO_PICKER = 2;
-
+    RelativeLayout loginScreen;
+    LinearLayout registerScreen;
     private EditText mEmailView;
     private EditText mPasswordView, emailRegister, userName, password1, password2;
     private View mProgressView;
-    private Button mEmailSignInButton, submitRegistration;
+    private Button submitRegistration;
     private LoginButton mloginButton;
     private CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
-    private TextView forgetPassword, registerButton, cancelRegistration;
-    RelativeLayout loginScreen;
-    LinearLayout registerScreen;
     private FirebaseUser user;
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
@@ -88,9 +85,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        mEmailView = (EditText) findViewById(R.id.emailInput);
+        mEmailView = findViewById(R.id.emailInput);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -105,13 +102,9 @@ public class LoginActivity extends AppCompatActivity {
         loginScreen = (RelativeLayout) findViewById(R.id.loginScreen);
         registerScreen = (LinearLayout) findViewById(R.id.registerScreen);
 
-        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        registerButton = (TextView) findViewById(R.id.registerText);
-        cancelRegistration = (TextView) findViewById(R.id.cancelRegistration);
         submitRegistration = (Button) findViewById(R.id.submitRegistration);
-        forgetPassword = (TextView) findViewById(R.id.forgetPassword);
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        findViewById(R.id.email_sign_in_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -119,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        registerButton.setOnClickListener(new OnClickListener() {
+        findViewById(R.id.registerText).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginScreen.setVisibility(View.GONE);
@@ -128,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        forgetPassword.setOnClickListener(new OnClickListener() {
+        findViewById(R.id.forgetPassword).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mProgressView.setVisibility(View.VISIBLE);
@@ -143,8 +136,8 @@ public class LoginActivity extends AppCompatActivity {
                                         mProgressView.setVisibility(View.GONE);
                                         Toast.makeText(LoginActivity.this, "Check your email for a reset link.", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Log.i("168", task.getException().toString());
                                         try {
+                                            Log.i("168", task.getException().toString());
                                             throw task.getException();
                                         } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
                                             error("no account found");
@@ -167,14 +160,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        View mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        emailRegister = (EditText) findViewById(R.id.emailRegister);
-        userName = (EditText) findViewById(R.id.userName);
-        password1 = (EditText) findViewById(R.id.password1);
-        password2 = (EditText) findViewById(R.id.password2);
-        dpChangeButton = (ImageView) findViewById(R.id.dpChangeButton);
+        emailRegister = findViewById(R.id.emailRegister);
+        userName = findViewById(R.id.userName);
+        password1 = findViewById(R.id.password1);
+        password2 = findViewById(R.id.password2);
+        dpChangeButton = findViewById(R.id.dpChangeButton);
 
         password2.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -187,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        cancelRegistration.setOnClickListener(new OnClickListener() {
+        findViewById(R.id.cancelRegistration).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginScreen.setVisibility(View.VISIBLE);
@@ -211,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
         mloginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.i("got that", "facebook:onSuccess:" + loginResult);
+                Log.i("point 213", "facebook:onSuccess:" + loginResult);
                 mProgressView.setVisibility(View.VISIBLE);
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
@@ -223,12 +215,12 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException error) {
+                error.printStackTrace();
                 error("some error occurred");
             }
         });
 
-        SignInButton signInGoogleButton= findViewById(R.id.signInGoogle);
-        signInGoogleButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.signInGoogle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mProgressView.setVisibility(View.VISIBLE);
@@ -342,23 +334,23 @@ public class LoginActivity extends AppCompatActivity {
                             user = mAuth.getCurrentUser();
                             if (selectedImageUri != null) {
                                 if (downloadUrl != null) {
-                                    Log.i(downloadUrl.toString(), "point 389");
+                                    Log.i("point 338", downloadUrl.toString());
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(userNameString)
                                             .setPhotoUri(downloadUrl)
                                             .build();
-                                    Log.i(selectedImageUri.toString(), "point 394");
+                                    Log.i("point 343", selectedImageUri.toString());
                                     user.updateProfile(profileUpdates)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Log.i("point 400", "User profile successfully updated.");
+                                                        Log.i("point 349", "User profile successfully updated.");
                                                         selectedImageUri = null;
                                                         downloadUrl = null;
                                                         loggedIn();
                                                     } else {
-                                                        Log.i("82", task.getException().toString());
+                                                        Log.i("point 362", task.getException().toString());
                                                         error("profile update failed");
                                                     }
                                                 }
@@ -418,6 +410,7 @@ public class LoginActivity extends AppCompatActivity {
                             } catch (com.google.firebase.FirebaseNetworkException e) {
                                 error("network error occurred");
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 error("some error occurred");
 
                             }
@@ -467,6 +460,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("point 464", resultCode + "");
+        mPasswordView.setVisibility(View.VISIBLE);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
 
@@ -489,6 +484,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (e.getStatusCode() == 12501) {
                     mProgressView.setVisibility(View.GONE);
                 } else {
+                    e.printStackTrace();
                     error("some error occurred");
 
                 }
@@ -534,20 +530,21 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.i("signInWithCrential:suce", "point 575");
+                            Log.i("point 534", "signInWithCredential:success");
                             loggedIn();
                         } else {
-                            Log.i("119", task.getException().toString());
                             try {
+                                Log.i("538", task.getException().toString());
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
-                                Log.i("123", "An account already exists with the same email address but different sign-in credentials");
+                                Log.i("541", "An account already exists with the same email address but different sign-in credentials");
                                 error("account exists with same email Id");
 
                             } catch (com.google.firebase.FirebaseNetworkException e) {
                                 error("network error occurred");
 
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 error("some error occurred");
 
                             }
@@ -560,14 +557,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-        // Check if user is signed in (non-null) and update UI accordingly.
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        mAuth.addAuthStateListener(mAuthListener);
     }
 
 
@@ -583,7 +577,7 @@ public class LoginActivity extends AppCompatActivity {
                             loggedIn();
                         } else {
                             mloginButton.setEnabled(true);
-                            Log.i("104", task.getException().toString());
+                            Log.i("581", task.getException().toString());
                             try {
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
@@ -593,6 +587,7 @@ public class LoginActivity extends AppCompatActivity {
                                 error("network error occurred");
 
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 error("some error occurred");
 
                             }
@@ -615,12 +610,14 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
         intent.putExtra("result", 1);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         setResult(Activity.RESULT_OK, intent);
         startActivity(intent);
         finish();
     }
 
     private void error(String message) {
+        Log.i("point 620", message);
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         mProgressView.setVisibility(View.GONE);
     }
