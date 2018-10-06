@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
@@ -15,12 +14,13 @@
         android:orientation="vertical">
 
         <ImageView
+            android:contentDescription="profile picture"
             android:id="@+id/profile_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
             android:src="@drawable/icon_profile_empty" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:padding="5dp"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:textStyle="bold"
             tools:text="jjjjjjjj" />
 
@@ -47,7 +47,7 @@
             android:padding="3dp"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="italic"
             tools:text="nij" />
     </RelativeLayout>
@@ -55,8 +55,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="logout"
         android:layout_gravity="center"
+        android:onClick="logout"
         android:text="logout" />
 
 

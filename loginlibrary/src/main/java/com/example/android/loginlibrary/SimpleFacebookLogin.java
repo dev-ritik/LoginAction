@@ -28,25 +28,10 @@ public class SimpleFacebookLogin {
     private FirebaseAuth mAuth;
     private Activity activity;
     private CallbackManager mCallbackManager;
+    private SimpleFacebookLogin.OnFacebookLoginResult mOnFacebookLoginResult;
 
     public SimpleFacebookLogin(Activity loginActivity) {
         this.activity = loginActivity;
-    }
-
-    private SimpleFacebookLogin.OnFacebookLoginResult mOnFacebookLoginResult;
-
-    public interface OnFacebookLoginResult {
-        void resultFacebookLoggedIn(LoginResult loginResult);
-
-        void resultActualLoggedIn(FirebaseUser registeredUser);
-
-        void resultCancel();
-
-        void accountCollisionError(Exception errorResult);
-
-        void networkError(Exception errorResult);
-
-        void resultError(Exception errorResult);
     }
 
     public void setOnFacebookLoginResult(SimpleFacebookLogin.OnFacebookLoginResult eventListener) {
@@ -101,8 +86,8 @@ public class SimpleFacebookLogin {
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("104", task.getException().toString());
                             try {
+                                Log.i("105", task.getException().toString());
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
                                 if (mOnFacebookLoginResult != null) {
@@ -126,5 +111,19 @@ public class SimpleFacebookLogin {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public interface OnFacebookLoginResult {
+        void resultFacebookLoggedIn(LoginResult loginResult);
+
+        void resultActualLoggedIn(FirebaseUser registeredUser);
+
+        void resultCancel();
+
+        void accountCollisionError(Exception errorResult);
+
+        void networkError(Exception errorResult);
+
+        void resultError(Exception errorResult);
     }
 }

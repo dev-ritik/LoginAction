@@ -38,15 +38,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private final static int RC_SIGN_IN_GOOGLE = 1;
     private static final int RC_PHOTO_PICKER = 2;
-
+    RelativeLayout loginScreen;
+    LinearLayout registerScreen;
     private EditText mEmailView;
     private EditText mPasswordView, emailRegister, userName, password1, password2;
     private View mProgressView;
     private Button mEmailSignInButton, submitRegistration;
     private LoginButton mloginButton;
     private SignInButton signInGoogleButton;
-    RelativeLayout loginScreen;
-    LinearLayout registerScreen;
     private ImageView dpChangeButton;
     private Uri selectedImageUri = null, downloadUrl = null;
     private SimpleGoogleLogin googleLogin;
@@ -87,21 +86,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
-        mEmailView = (EditText) findViewById(R.id.emailInput);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        loginScreen = (RelativeLayout) findViewById(R.id.loginScreen);
-        registerScreen = (LinearLayout) findViewById(R.id.registerScreen);
-        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        forgetPassword = (TextView) findViewById(R.id.forgetPassword);
-        registerText = (TextView) findViewById(R.id.registerText);
-        cancelRegistration = (TextView) findViewById(R.id.cancelRegistration);
-        submitRegistration = (Button) findViewById(R.id.submitRegistration);
+        mEmailView = findViewById(R.id.emailInput);
+        mPasswordView = findViewById(R.id.password);
+        loginScreen = findViewById(R.id.loginScreen);
+        registerScreen = findViewById(R.id.registerScreen);
+        mEmailSignInButton = findViewById(R.id.email_sign_in_button);
+        forgetPassword = findViewById(R.id.forgetPassword);
+        registerText = findViewById(R.id.registerText);
+        cancelRegistration = findViewById(R.id.cancelRegistration);
+        submitRegistration = findViewById(R.id.submitRegistration);
         mProgressView = findViewById(R.id.login_progress);
-        emailRegister = (EditText) findViewById(R.id.emailRegister);
-        userName = (EditText) findViewById(R.id.userName);
-        password1 = (EditText) findViewById(R.id.password1);
-        password2 = (EditText) findViewById(R.id.password2);
-        dpChangeButton = (ImageView) findViewById(R.id.dpChangeButton);
+        emailRegister = findViewById(R.id.emailRegister);
+        userName = findViewById(R.id.userName);
+        password1 = findViewById(R.id.password1);
+        password2 = findViewById(R.id.password2);
+        dpChangeButton = findViewById(R.id.dpChangeButton);
         mloginButton = findViewById(R.id.login_button);
         signInGoogleButton = findViewById(R.id.signInGoogle);
     }
@@ -210,8 +209,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void wrongCredentials(String doubtfulCredentials, String errorMessage) {
                 mProgressView.setVisibility(View.GONE);
-                switch (doubtfulCredentials){
-                    case "email" :
+                switch (doubtfulCredentials) {
+                    case "email":
                         mEmailView.setError(errorMessage);
                         mEmailView.requestFocus();
                         break;
@@ -355,6 +354,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), com.example.android.loginaction.MainActivity.class);
         intent.putExtra("result", 1);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         setResult(Activity.RESULT_OK, intent);
         startActivity(intent);
     }

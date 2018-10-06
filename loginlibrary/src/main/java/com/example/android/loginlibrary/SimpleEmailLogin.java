@@ -77,8 +77,8 @@ public class SimpleEmailLogin {
                                     mOnEmailLoginResult.resultSuccessful(user);
                                 }
                             } else {
-                                Log.i("78", task.getException().toString());
                                 try {
+                                    Log.i("81", task.getException().toString());
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
                                     if (mOnEmailLoginResult != null) {
@@ -125,7 +125,7 @@ public class SimpleEmailLogin {
         return true;
     }
 
-    boolean isEmailValid(String email) {
+    private boolean isEmailValid(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
                 "[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
@@ -166,8 +166,8 @@ public class SimpleEmailLogin {
                                     mOnPasswordChangeResult.resultSuccessful();
                                 }
                             } else {
-                                Log.i("168", task.getException().toString());
                                 try {
+                                    Log.i("170", task.getException().toString());
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthInvalidUserException e) {
                                     if (mOnPasswordChangeResult != null) {

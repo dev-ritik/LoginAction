@@ -23,28 +23,9 @@ public class SimpleRegistration {
 
     private FirebaseUser user;
     private FirebaseAuth mAuth;
-
-    public SimpleRegistration() {
-    }
-
     private OnRegistrationResult mOnRegistrationResult;
 
-    public interface OnRegistrationResult {
-        void resultSuccessful(FirebaseUser registeredUser);
-
-        void sameEmailError(Exception errorResult);
-
-        void networkError(Exception errorResult);
-
-        void resultError(Exception errorResult);
-
-        void profileUpdateError(Exception errorResult);
-
-        void resultName(FirebaseUser registeredUser);
-
-        void resultDp(Uri uploadUriLink);
-
-        void wrongCredentials(String doubtfulCredential, String errorMessage);
+    public SimpleRegistration() {
     }
 
     public void setOnRegistrationResult(OnRegistrationResult eventListener) {
@@ -81,7 +62,7 @@ public class SimpleRegistration {
                                                         mOnRegistrationResult.resultDp(uploadedDpLink);
                                                     }
                                                 } else {
-                                                    Log.i("82", task.getException().toString());
+                                                    Log.i("82", task.getException() + "");
                                                     if (mOnRegistrationResult != null) {
                                                         mOnRegistrationResult.profileUpdateError(task.getException());
                                                     }
@@ -90,8 +71,8 @@ public class SimpleRegistration {
                                         });
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Log.i("91", task.getException().toString());
                                 try {
+                                    Log.i("94", task.getException().toString());
                                     throw task.getException();
                                 } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
                                     if (mOnRegistrationResult != null) {
@@ -117,10 +98,10 @@ public class SimpleRegistration {
         if (!isEmailValid(email)) {
             return false;
         }
-        if (!passwordCheck(password1, 1)) {
+        if (passwordCheck(password1, 1)) {
             return false;
         }
-        if (!passwordCheck(password2, 2)) {
+        if (passwordCheck(password2, 2)) {
             return false;
         }
         if (!password1.equals(password2)) {
@@ -133,7 +114,7 @@ public class SimpleRegistration {
         return true;
     }
 
-    boolean isEmailValid(String email) {
+    private boolean isEmailValid(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
                 "[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
@@ -141,10 +122,10 @@ public class SimpleRegistration {
 
         Pattern pat = Pattern.compile(emailRegex);
         if (email == null) {
-            if (mOnRegistrationResult != null) {
+            if (mOnRegistrationResult != null)
                 mOnRegistrationResult.wrongCredentials("email", "empty");
-                return false;
-            }
+            return false;
+
         }
         if (!pat.matcher(email).matches()) {
             if (mOnRegistrationResult != null) {
@@ -159,13 +140,31 @@ public class SimpleRegistration {
             if (mOnRegistrationResult != null) {
                 mOnRegistrationResult.wrongCredentials("password" + passwordNumber, "empty");
             }
-            return false;
+            return true;
         } else if (password.length() < 7) {
             if (mOnRegistrationResult != null) {
                 mOnRegistrationResult.wrongCredentials("password" + passwordNumber, "short");
             }
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    public interface OnRegistrationResult {
+        void resultSuccessful(FirebaseUser registeredUser);
+
+        void sameEmailError(Exception errorResult);
+
+        void networkError(Exception errorResult);
+
+        void resultError(Exception errorResult);
+
+        void profileUpdateError(Exception errorResult);
+
+        void resultName(FirebaseUser registeredUser);
+
+        void resultDp(Uri uploadUriLink);
+
+        void wrongCredentials(String doubtfulCredential, String errorMessage);
     }
 }

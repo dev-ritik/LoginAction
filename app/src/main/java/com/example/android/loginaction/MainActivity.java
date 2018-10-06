@@ -26,26 +26,22 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
-
+    public static StorageReference mProfilePicStorageReference;
     private static String mUserName;
     private static Uri mUserDp;
-    private String mEmailId;
-
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private FirebaseStorage mFirebaseStorage;
-    public static StorageReference mProfilePicStorageReference;
-    private LinearLayout mainLayout;
     TextView userName;
     ImageView profilePic;
+    private String mEmailId;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private LinearLayout mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFirebaseStorage = FirebaseStorage.getInstance();
-        mProfilePicStorageReference = mFirebaseStorage.getReference("profile_pic");
+        mProfilePicStorageReference = FirebaseStorage.getInstance().getReference("profile_pic");
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -56,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 if (user != null) {
                     //user is signed
                     Log.i("point m57", "user != null");
-                    onSignInitilize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
+                    onSignInitialize(user.getUid(), user.getEmail(), user.getPhotoUrl(), user.getDisplayName());
                 } else {
                     //user signed out
                     Log.i("point m61", "user = null");
@@ -79,14 +75,14 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         userName = findViewById(R.id.userName);
-        mainLayout = (LinearLayout) findViewById(R.id.main_content);
+        mainLayout = findViewById(R.id.main_content);
 
         profilePic = findViewById(R.id.profile_image);
 
 
     }
 
-    private void onSignInitilize(String userid, String email, Uri profilePicNew, String userNameNew) {
+    private void onSignInitialize(String userid, String email, Uri profilePicNew, String userNameNew) {
         mEmailId = email;
         mUserDp = profilePicNew;
         mUserName = userNameNew;

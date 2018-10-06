@@ -113,8 +113,8 @@ public class SimpleGoogleLogin {
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.i("119", task.getException().toString());
                             try {
+                                Log.i("117", task.getException().toString());
                                 throw task.getException();
                             } catch (com.google.firebase.auth.FirebaseAuthUserCollisionException e) {
                                 Log.i("123", "An account already exists with the same email address but different sign-in credentials");
